@@ -1,0 +1,658 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asset List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-abc123..." crossorigin="anonymous" />
+    <style>
+       
+        .search-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .search-container input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .search-container .add-button {
+            padding: 8px 16px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+        }
+        .search-container .add-button:hover {
+            background-color: #0056b3;
+        }
+        .table-box {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .table-box h2 {
+            margin-top: 0;
+            font-size: 24px;
+            color: #333;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #575d64;
+            color: #ddd;
+        }
+        .edit-icon{
+            color: #1f04e6;
+            cursor: pointer;
+            text-align: center;
+        }
+        .delete-icon {
+            color: #db0739;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 1% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+        }
+        .form-container {
+            width: 100%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-header {
+            background-color: #6c757d;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-size: 24px;
+        }
+        .form-body {
+            padding: 10px;
+        }
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            flex-basis: 20%;
+            padding: 10px 0;
+        }
+        .form-group input, .form-group select {
+            flex-basis: 75%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-buttons button {
+            width: 48%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-buttons .save-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        .form-buttons .reset-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+        .dropdown {
+            display: none;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .dropdown li {
+            margin: 10px 0;
+        }
+        .dropdown a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .dropdown a:hover, .dropdown a:focus {
+            background-color: #444;
+        }
+        .show-dropdown .dropdown {
+            display: block;
+        }
+        .show-dropdown .navigation > li:not(.settings) {
+            display: none;
+        }
+        .show-dropdown .settings {
+            margin-top: 0;
+        }
+        .settings i.dropdown-icon {
+            margin-left: 10px;
+            transition: transform 0.3s;
+        }
+        .show-dropdown .settings i.dropdown-icon {
+            transform: rotate(180deg);
+        }
+        form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.form-group {
+    flex: 1 1 calc(50% - 20px);
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.form-buttons {
+    flex: 1 1 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.editusername, .editpassword {
+            display: block; /* or use inline-block or other as needed */
+            visibility: visible;
+}
+    </style>
+</head>
+<body>
+    {% if user_role == 'admin' %}
+        {% include 'asset_mng/admin_sidebar.html' %}
+    {% elif user_role == 'asset_owner' %}
+        {% include 'asset_mng/asset_owner_sidebar.html' %}
+    {% endif %}  
+    <div class="right">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search by AssetName..." aria-label="Search">
+            <button class="add-button" aria-label="Add Asset" id="addUserButton"><i class="fas fa-plus"></i> Add</button>
+        </div>
+        <div class="table-box">
+            <h2>Asset List</h2>
+            <div class="table-container">
+                <table id="AssetTable" role="table">
+                    <thead>
+                        <tr>
+                            <th>Serial No</th>
+                            <th>Asset Name</th>
+                            <th>Asset Type</th>
+                            <th>Status</th>
+                            <th>Item Code</th>
+                            <th>Assigned To</th>
+                            <th>Images</th>
+                            <th>View</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr data-Serial_number="{{user.Serial_number}}" data-Model_number="{{user.Model_number}}" data-Machine="{{user.Machine_OS_configuration}}" data-movable="{{user.Movable_nonmovable}}" 
+                            data-vendor="{{user.Vender_Supplier}}" data-Maintenance="{{user.Maintenance}}" data-price="{{user.price}}" data-year_of_purchase="{{user.Year_of_purchasing|date:'Y-m-d'}}" data-year_of_expiry="{{user.Year_of_expiry|date:'Y-m-d'}}" data-age_life="{{user.Age_life}}" data-notes="{{user.Notes}}">
+                            <td>{{forloop.counter}}</td>
+                            <td>{{user.Asset_name}}</td>
+                            <td>{{user.Asset_type}}</td>
+                            <td>{{user.Status}}</td>
+                            <td>{{user.Item_code}}</td>
+                            <td>{{user.Assigned_To}}</td>
+                            <td>{{user.images}}</td>
+
+                            <td class="edit-icon">
+                                <a href="{% url 'view_asset' user.id %}">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+
+                            <td class="edit-icon">
+                                <i class="fas fa-edit" data-id="{{ user.id }}"  id="edit-button"></i>
+                            </td>
+                            <td>
+                                <form action="{% url 'delete_asset' user.id %}" method="post" >
+                                    {% csrf_token %}
+                                    <button type="submit" class="delete-icon"><i class="fas fa-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div id="noResultsMessage" style="display: none; text-align: center;">
+                    <h3>NO RECORDS FOUND</h3>
+                </div>
+            </div>
+            <dialog id="confirmDialog">
+                <form method="dialog">
+                    <p>Are you sure you want to delete this asset?</p>
+                <div class="button-container">
+                    <button value="yes">Yes</button>
+                    <button value="no">No</button>
+                </div>
+                </form>
+            </dialog>   
+
+            <div id="myModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="form-container">
+                        <div class="form-header">Add Asset</div>
+                        <div class="form-body">
+                            <form id="addAssetForm" method="POST" action="{% url 'add_asset' %}">
+                                {% csrf_token %}  
+                                <div class="form-group">
+                                    <label for="asset_name">Asset Name:*</label>
+                                    <input type="text" id="asset_name" name="Asset_name" placeholder="Asset Name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="asset_type">Asset Type:*</label>
+                                    <input type="text" id="asset_type" name="Asset_type" placeholder="Asset Type" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="serial">Serial Number:</label>
+                                    <input type="text" id="serial" name="Serial_number" placeholder="Serial Number">
+                                </div>
+                                <div class="form-group">
+                                    <label for="modelNumber">Model Number</label>
+                                    <input type="text" id="modelNumber" name="Model_number" placeholder="Model Number">
+                                </div>
+                                <div class="form-group">
+                                    <label for="item_code">Item Code:*</label>
+                                    <input type="text" id="item_code" name="Item_code" placeholder="Item Code" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="machine">Machine & OS Configuration</label>
+                                    <input type="text" id="machine" name="Machine_OS_configuration" placeholder="Machine & OS">
+                                </div>
+                                <div class="form-group">
+                                    <label for="movable">Movable/Nonmovable</label>
+                                    <select id="movable" name="Movable_nonmovable">
+                                        <option value="" disabled selected>--Select--</option>
+                                        <option value="movable">Movable</option>
+                                        <option value="nonmovable">Nonmovable</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="assigned_to">Assigned To</label>
+                                    <input type="text" id="assigned_to" name="Assigned_To" placeholder="Assigned_To">
+                                </div>
+            
+                                <div class="form-group">
+                                    <label for="status">Status:*</label>
+                                    <select id="status" name="Status" required>
+                                        <option value="" disabled selected>--Select--</option>
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vender">Vendor/Supplier</label>
+                                    <input type="text" id="vender" name="Vender_Supplier" placeholder="Vendor/Supplier">
+                                </div>
+                                <div class="form-group">
+                                    <label for="maintain">Maintenance</label>
+                                    <select id="maintain" name="Maintenance">
+                                        <option value="" disabled selected>--Select--</option>
+                                        <option value="AMC">AMC</option>
+                                        <option value="Warranty">Warranty</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="price">Price</label>
+                                    <input type="number" id="price" name="price" placeholder="Price">
+                                </div>
+                                <div class="form-group">
+                                    <label for="date">Year Of Purchasing</label>
+                                    <input type="date" pattern="\d{4}-\d{2}-\d{2}"  id="date" name="Year_of_purchasing">
+                                </div>
+                                <div class="form-group">
+                                    <label for="expiry">Year Of Expiry</label>
+                                    <input type="date" pattern="\d{4}-\d{2}-\d{2}"  id="expiry" name="Year_of_expiry">
+                                </div>
+                                <div class="form-group">
+                                    <label for="age">Age Of Asset</label>
+                                    <input type="number" id="age" name="Age_life" placeholder="Age Of Asset">
+                                </div>
+                                <div class="form-group">
+                                    <label for="myFile">Supporting Docs</label>
+                                    <input type="file" id="myFile" name="Supporting_docs">
+                                </div>
+                                <div class="form-group">
+                                    <label for="asset_img">Image Of Asset</label>
+                                    <input type="file" id="asset_img" name="images">
+                                    <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width:100%; height:auto;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="notes">Notes</label>
+                                    <input type="text" id="notes" name="Notes" placeholder="Notes">
+                                </div>
+                                <div class="form-buttons">
+                                    <button type="submit" class="save-btn">Save</button>
+                                    <button type="reset" class="reset-btn" id="resetFormBtn">Reset</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="editModal" class="modal">
+                <div class="modal-content">
+                    <div class="form-container">
+                        <div class="form-header">Edit Asset</div>
+                        <div class="form-body">
+                            <form id="editForm" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" id="editAssetId" name="id">
+                                <div class="form-group">
+                                    <label for="editAssetName">Asset Name:*</label>
+                                    <input type="text" id="editAssetName" name="Asset_name" placeholder="Asset Name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editAssetType">Asset Type:*</label>
+                                    <input type="text" id="editAssetType" name="Asset_type" placeholder="Asset Type" required>
+                                </div> 
+                                <div class="form-group">
+                                    <label for="editSerial">Serial Number:</label>
+                                    <input type="text" id="editSerial" name="Serial_number" placeholder="Serial Number">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editModelNumber">Model Number:</label>
+                                    <input type="text" id="editModelNumber" name="Model_number" placeholder="Model Number">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editItemCode">Item Code:*</label>
+                                    <input type="text" id="editItemCode" name="Item_code" placeholder="Item Code" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editMachine">Machine & OS Configuration:</label>
+                                    <input type="text" id="editMachine" name="Machine_OS_configuration" placeholder="Machine & OS">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editMovable">Movable/Nonmovable:</label>
+                                    <select id="editMovable" name="Movable_nonmovable">
+                                        <option value="movable">Movable</option>
+                                        <option value="nonmovable">Nonmovable</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editAssignedTo">Assigned To:</label>
+                                    <input type="text" id="editAssignedTo" name="Assigned_To" placeholder="Assigned_To">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editStatus">Status:*</label>
+                                    <select id="editStatus" name="Status" required>
+                                        <option value="" disabled selected>--Select--</option>
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editVendor">Vendor/Supplier:</label>
+                                    <input type="text" id="editVendor" name="Vender_Supplier" placeholder="Vendor/Supplier">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editMaintain">Maintenance:</label>
+                                    <select id="editMaintain" name="Maintenance">
+                                        <option value="AMC">AMC</option>
+                                        <option value="Warranty">Warranty</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editPrice">Price:</label>
+                                    <input type="text" id="editPrice" name="price" placeholder="Price">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editDate">Year Of Purchasing:</label>
+                                    <input type="date" pattern="\d{4}-\d{2}-\d{2}" id="editDate" name="Year_of_purchasing">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editExpiry">Year Of Expiry:</label>
+                                    <input type="date" pattern="\d{4}-\d{2}-\d{2}" id="editExpiry" name="Year_of_expiry">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editAge">Age Of Asset:</label>
+                                    <input type="text" id="editAge" name="Age_life" placeholder="Age Of Asset">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editMyFile">Supporting Docs:</label>
+                                    <input type="file" id="editMyFile" name="Supporting_docs">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editAssetImg">Image Of Asset:</label>
+                                    <input type="file" id="editAssetImg" name="images">
+                                    <img id="editImagePreview" src="#" alt="Image Preview" style="display:none; max-width:100%; height:auto;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editNotes">Notes:</label>
+                                    <input type="text" id="editNotes" name="Notes" placeholder="Notes">
+                                </div>
+                                <div class="form-buttons">
+                                    <button type="submit" class="save-btn">Save</button>
+                                    <button type="button" class="reset-btn" onclick="closeEditModal()">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    <script>
+        
+
+        document.addEventListener('DOMContentLoaded', function() {
+        // Add Asset Modal
+            const addModal = document.getElementById('myModal');
+            const addBtn = document.getElementById('addUserButton');
+            const addForm = document.getElementById('addAssetForm');
+            const resetFormBtn = document.getElementById('resetFormBtn');
+            const searchInput = document.getElementById('searchInput');
+            const deleteButtons = document.querySelectorAll('.delete-icon');
+            const dialog = document.getElementById('confirmDialog');
+
+        // Search functionality    
+            searchInput.addEventListener('input', function() {
+                const filter = this.value.toLowerCase();
+                const rows = document.querySelectorAll('#AssetTable tbody tr');
+                let hasResults = false;
+            
+                rows.forEach(row => {
+                    const AssetName = row.cells[1].textContent.toLowerCase();
+                    if (AssetName.includes(filter)) {
+                        row.style.display = '';
+                        hasResults = true;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                noResultsMessage.style.display = hasResults ? 'none' : 'block';    
+            });
+        // Open Add Asset Modal on Button Click
+            addBtn.addEventListener('click', function() {
+                addModal.style.display = 'block';
+            });
+        // Close Add Asset Modal when Clicking Outside of It
+            window.addEventListener('click', function(event) {
+                if (event.target == addModal) {
+                    addModal.style.display = 'none';
+                }
+            });
+        // Reset Add Asset Form on Button Click
+            resetFormBtn.addEventListener('click', function() {
+                addForm.reset();
+            });
+        // Delete User Confirmation
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                const form = button.closest('form');
+            
+                            // Open the dialog
+                dialog.showModal();
+            
+                            // Handle dialog closing
+                dialog.addEventListener('close', function() {
+                    if (dialog.returnValue === 'yes') {
+                        form.submit(); // Submit the form if 'yes' is selected
+                    }
+                }, { once: true });
+            });
+        });
+
+        // Edit Asset Modal
+        
+            const editIcons = document.querySelectorAll('.edit-icon');
+            const editModal = document.getElementById('editModal');
+            const editAssetForm = document.getElementById('editAssetForm');
+
+            const editAssetIdInput = document.getElementById('editAssetId');
+            const editassettypeInput = document.getElementById('editassettype');
+            const editassetnameInput = document.getElementById('editassetname');
+            const editserialInput = document.getElementById('editserial');
+            const editmodelInput = document.getElementById('editmodel');
+            const edititemInput = document.getElementById('edititem');
+            const editmachineInput = document.getElementById('editmachine');
+            const editmovableInput = document.getElementById('editmovable');
+            const editstatusInput = document.getElementById('editstatus');
+            const editvenderInput = document.getElementById('editvender');
+            const editmaintainInput= document.getElementById('editmaintain');
+            const editpriceInput = document.getElementById('editprice');
+            const editdateInput = document.getElementById('editdate');
+            const editexpiryInput = document.getElementById('editexpiry');
+            const editageInput = document.getElementById('editage');
+            const editmyFileInput = document.getElementById('editmyFile');
+            const editimgInput = document.getElementById('editimg');
+            const editnotesInput = document.getElementById('editnotes');
+            const cancelButton = document.getElementById('cancelEditButton');
+    // Open Edit Asset Modal on Edit Icon Click
+            editIcons.forEach(icon => {
+                icon.addEventListener('click', function() {
+                    const row = this.parentElement.parentElement;
+                // Get asset details from the table row
+                    const AssetId = row.querySelector('td:nth-child(1)').textContent;
+                    const assettype = row.querySelector('td:nth-child(2)').textContent;
+                    const assetname = row.querySelector('td:nth-child(3)').textContent;
+                    const serialnumber = row.querySelector('td:nth-child(4)').textContent;
+                    const modelnumber = row.querySelector('td:nth-child(5)').textContent;
+                    const itemcode = row.querySelector('td:nth-child(6)').textContent;
+                    const machine = row.querySelector('td:nth-child(7)').textContent;
+                    const movable = row.querySelector('td:nth-child(8)').textContent;
+                    const status = row.querySelector('td:nth-child(9)').textContent;
+                    const vender = row.querySelector('td:nth-child(10)').textContent;
+                    const maintain = row.querySelector('td:nth-child(10)').textContent;
+                    const price = row.querySelector('td:nth-child(11)').textContent;
+                    const date = row.querySelector('td:nth-child(12)').textContent;
+                    const expiry = row.querySelector('td:nth-child(13)').textContent;
+                    const age = row.querySelector('td:nth-child(10)').textContent;
+                    const myFile = row.querySelector('td:nth-child(10)').textContent;
+                    const images = row.querySelector('td:nth-child(10)').textContent;
+                    const notes = row.querySelector('td:nth-child(10)').textContent;
+
+
+                // Populate edit form fields with user data
+                    editAssetIdInput.value = AssetId;
+                    editassettypeInput.value = assettype;
+                    editassetnameInput.value = assetname;
+                    editserialInput.value = serialnumber;
+                    editmodelInput.value = modelnumber;
+                    edititemInput.value = itemcode;
+                    editmachineInput.value = machine;
+                    editmovableInput.value = movable;
+                    editstatusInput.value = status;
+                    editvenderInput.value = vender;
+                    editmaintainInput.value = maintain;
+                    editpriceInput.value = price;
+                    editdateInput.value = date;
+                    editexpiryInput.value = expiry;
+                    editageInput.value = age;
+                    editmyFileInput.value = myFile;
+                    editimgInput.value = images;
+                    editnotesInput.value = notes;
+                
+
+                // Show the edit modal
+                    editModal.style.display = 'block';
+                });
+            });
+
+        // Optional: Reset edit form fields on modal close
+            editModal.addEventListener('click', function(event) {
+                if (event.target === editModal) {
+                    closeEditModal();
+                }
+            });
+        });     
+</script>
+</body>
+</html>

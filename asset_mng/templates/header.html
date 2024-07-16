@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{% static '/css/header.css' %}">
+</head>
+<body>
+    <div class="navbar">
+        <a href="{% url 'property_management' %}" class="{% if request.resolver_match.url_name == 'property_management' %}active{% endif %}">Property Management</a>
+        <a href="{% url 'amc_mng' %}" class="{% if request.resolver_match.url_name == 'amc_mng' %}active{% endif %}">AMC Management</a>
+        <a href="{% url 'store_mng' %}" class="{% if request.resolver_match.url_name == 'store_mng' %}active{% endif %}">Store Management</a>
+        <a href="{% url 'rem_schedule' %}"  class="{% if request.resolver_match.url_name == 'rem_schedule' %}active{% endif %}">Reminder Schedule for Contract</a>
+        <a href="{% url 'vehicle_mng' %}" class="{% if request.resolver_match.url_name == 'vehicle_mng' %}active{% endif %}">Vehicle Management</a>
+        <a href="{% url 'asset_login' %}" class="{% if request.resolver_match.url_name == 'asset_login' %}active{% endif %}">Asset Management</a>
+        <a href="{% url 'build_mnt' %}" class="{% if request.resolver_match.url_name == 'build_mnt' %}active{% endif %}">Building Maintenance</a>
+        <a href="{% url 'iso_mng' %}" class="{% if request.resolver_match.url_name == 'iso_mng' %}active{% endif %}">ISO Management</a>
+        <a href="{% url 'house_mng' %}" class="{% if request.resolver_match.url_name == 'house_mng' %}active{% endif %}">House Keeping Management</a>
+        <a href="{% url 'purchase_mng' %}" class="{% if request.resolver_match.url_name == 'purchase_mng' %}active{% endif %}">Purchase Management</a>
+        <a href="{% url 'tax_building' %}" class="{% if request.resolver_match.url_name == 'tax_building' %}active{% endif %}">Tax/Building Property</a>
+        <a href="{% url 'tenant_mng' %}" class="{% if request.resolver_match.url_name == 'tenant_mng' %}active{% endif %}">Tenant/Contract Management</a>
+    </div>     
+</body>
+</html>

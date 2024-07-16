@@ -1,0 +1,36 @@
+{% load static %}
+<html>
+<body>
+    {% include 'asset_mng/admin_sidebar.html' %}   
+    <div class="right">
+        <h1 class="welcome-admin">Welcome back, {{username.upper}}</h1>
+        <div class="statistics">
+            <div class="stat-box">
+                <i class="fas fa-users"></i>
+                <h2>12</h2>
+                <p>Total Users</p>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-user-tie"></i>
+                <h2>180</h2>
+                <p>Total Employees</p>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-box"></i>
+                <h2>370</h2>
+                <p>Total Assets</p>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-tools"></i>
+                <h2>14</h2>
+                <p>Maintenance Checks</p>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-tasks"></i>
+                <h2>6</h2>
+                <p>Pending Work</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

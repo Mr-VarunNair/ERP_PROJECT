@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Asset</title>
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            
+        }
+        .form-header {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background-color:rgb(146, 139, 139);
+            color:aliceblue;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+        .form-group p {
+            margin: 5px 0 0 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-row .form-group {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .form-row .form-group:last-child {
+            margin-right: 0;
+        }
+        .modal-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-header">View Asset</div>
+        <div class="form-body">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Asset Type:</label>
+                    <p>{{ asset.Asset_type }}</p>
+                </div>
+                <div class="form-group">
+                    <label>Asset Name:</label>
+                    <p>{{ asset.Asset_name }}</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Serial Number:</label>
+                    <p>{{ asset.Serial_number }}</p>
+                </div>
+                <div class="form-group">
+                    <label>Model Number:</label>
+                    <p>{{ asset.Model_number }}</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Item Code:</label>
+                    <p>{{ asset.Item_code }}</p>
+                </div>
+                <div class="form-group">
+                    <label>Machine & OS Configuration:</label>
+                    <p>{{ asset.Machine_OS_configuration }}</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Movable/Non-Movable:</label>
+                    <p>{{ asset.Movable_nonmovable }}</p>
+                </div>
+                <div class="form-group">
+                    <label>Assigned To:</label>
+                    <p>{{ asset.Assigned_To }}</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Status:</label>
+                    <p>{{ asset.Status }}</p>
+                </div>
+                <div class="form-group">
+                    <label>Vendor/Supplier:</label>
+                    <p>{{ asset.Vender_Supplier }}</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Maintenance:</label>
+                    <p>{{ asset.Maintenance }}</p>
+                </div>
+                <div class="form-group">
+                    <label>Price:</label>
+                    <p>{{ asset.price }}</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Year of Purchasing:</label>
+                    <p>{{ asset.Year_of_purchasing }}</p>
+                </div>
+                <div class="form-group">
+                    <label>Year of Expiry:</label>
+                    <p>{{ asset.Year_of_expiry }}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Age Life:</label>
+                <p>{{ asset.Age_life }}</p>
+            </div>
+            <div class="form-group">
+                <label>Supporting Docs:</label>
+                <p>{{ asset.Supporting_docs }}</p>
+            </div>
+            <div class="form-group">
+                <label>Notes:</label>
+                <p>{{ asset.Notes }}</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="{% url 'asset_list' %}" class="btn">Back to Asset List</a>
+        </div>
+    </div>
+</body>
+</html>

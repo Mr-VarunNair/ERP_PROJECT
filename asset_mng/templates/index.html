@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e9d8e7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        .login-container h1 {
+            margin-bottom: 20px;
+        }
+        .login-container select,
+        .login-container input {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .login-container button {
+            padding: 10px;
+            width: 97%;
+            background-color: #0aca23;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 30px;
+        }
+        .login-container button:hover {
+            background-color: #008712;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            margin-bottom: 10px;
+            display: none;
+        }
+        .forgot_password{
+            color: rgb(47, 146, 233);
+        }
+        .forgot_password a{
+            font-style: italic;
+            text-decoration: none;
+            font-size: small;
+        }
+        .forgot_password a:hover{
+            color: blue;
+            font-weight: bold;
+        }
+        .sign_up{
+            font-size: 15px;
+        }
+        .sign_up a{
+            text-decoration: none;
+        }
+        .sign_up a:hover{
+            font-weight: bold;
+            color: #009dff;
+            text-decoration:underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <i class="fa fa-user fa-5x"></i>
+        <h2>LOGIN</h2>
+       
+        <select id="department">
+            <option value="" disabled selected>Choose the department</option>
+            <option value="propertymanagement.html">Property Management</option>
+            <option value="amcmanagement.html">AMC Management</option>
+            <option value="storemanagement.html">Store Management</option>
+            <option value="scheduleforcontract.html">Remendes schedule for contract</option>
+            <option value="vehiclemanagement.html">Vehicle Management</option>
+            <option value="assetmanagement.html">Asset management</option>
+            <option value="buildingmaintenance.html">Building Maintenance</option>
+            <option value="isomanagement.html">ISO Management</option>
+            <option value="housekeeping.html">House keeping managemeent</option>
+            <option value="purchase.html">Purchase management</option>
+            <option value="tax.html">Tax/Building/Property</option>
+            <option value="contractmanagement.html">Contract Management</option>
+        </select>
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <div class="error" id="error">Please fill out all fields.</div>
+        <button onclick="login()">Submit</button>
+        <div class="forgot_password">
+            <a href="{% url 'forgot_password' %}">Forgot Password?</a>
+        </div>
+        <div class="sign_up">
+            <p>Don't have an account?<a href="{% url 'sign_up' %}">Sign Up</a></p>
+        </div>
+        
+    </div>
+
+    <script>
+        function login() {
+            const department = document.getElementById('department').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error');
+
+            if (username === "" || password === "") {
+                errorDiv.style.display = 'block';
+                return;
+            } else {
+                errorDiv.style.display = 'none';
+                window.location.href = department;
+            }
+        }
+    </script>
+</body>
+</html>

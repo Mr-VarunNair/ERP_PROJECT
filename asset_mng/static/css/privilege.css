@@ -1,0 +1,40 @@
+.right {
+    width: 80%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow: auto;
+}
+.table-box {
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+}
+.table-box h2 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #333;
+}
+.table-container {
+    overflow-x: auto;
+    margin-top: 10px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+th, td {
+    
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 15px;
+
+}
+th {
+    background-color: #575d64;
+    color: #ddd;
+}
+

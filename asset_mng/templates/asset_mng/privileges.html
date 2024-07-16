@@ -1,0 +1,81 @@
+{% load static %}
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <style>
+            .right {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 80vh;
+                gap: 20px;
+            }
+            .icon-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 30px;
+            }
+            .icon-container div {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 100px;
+                height: 100px;
+                border: 1px solid #ccc;
+                border-radius: 10px;
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+            .icon-container div:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 4px 8px #2c3e50;
+            }
+            .icon-container i {
+                font-size: 3rem;
+                color: black;
+            }
+            .icon-container span {
+                margin-top: 10px;
+                font-size: 1rem;
+                color: black;
+            }
+            .icon-container a{
+                text-decoration: none;
+            }
+        </style>
+    </head>
+<body>
+    {% include 'asset_mng/admin_sidebar.html' with username=username %} 
+    <div class="right">
+        <div class="icon-container">
+            <a href="{% url 'privilege_ciso' %}">
+                <div title="CISO">
+                    <i class="fas fa-user-shield"></i>
+                    <span>CISO</span>
+                </div>
+            </a>
+            <a href="{% url 'privilege_admin' %}">
+                <div title="ADMIN">
+                    <i class="fas fa-user-cog"></i>
+                    <span>ADMIN</span>
+                </div>
+            </a>
+            <a href="{% url 'privilege_head' %}">
+                <div title="HEAD">
+                    <i class="fas fa-user-tie"></i>
+                    <span>HEAD</span>
+                </div>
+            </a>
+            <a href="{% url 'privilege_asset_owner' %}">
+                <div title="ASSET OWNER">
+                    <i class="fas fa-user-tag"></i>
+                    <span>Asset Owner</span>
+                </div>
+            </a>
+        </div>
+        
+    </div>    
+
+</body>
+</html>    
