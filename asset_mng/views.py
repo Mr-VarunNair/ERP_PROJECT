@@ -127,8 +127,6 @@ def privilege_asset_owner(request):
 def asset_list(request):
     users = Asset_Table.objects.all()
     user_role = request.session.get('role')
-    
-
     return render(request, 'asset_mng/asset_pro.html', {
         'users': users,'user_role':user_role
     })
