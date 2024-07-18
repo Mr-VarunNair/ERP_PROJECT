@@ -1,6 +1,7 @@
 from django.contrib import admin
 from . models import UserDetails
 from . models import Asset_Table
+from . models import AssetOwner_Privilege
 
 
 admin.site.site_header = 'ERP' 
@@ -11,4 +12,5 @@ class AssetDetails(admin.ModelAdmin):               #to display asset datails as
 
 admin.site.register(UserDetails)
 admin.site.register(Asset_Table,AssetDetails)
+admin.site.register(AssetOwner_Privilege)
 

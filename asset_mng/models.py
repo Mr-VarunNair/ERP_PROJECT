@@ -43,3 +43,4 @@ class UserPreference(models.Model):
 class AssetOwner_Privilege(models.Model):
     user = models.ForeignKey(UserDetails, on_delete=models.CASCADE)
     add_asset = models.BooleanField(default=False)
+

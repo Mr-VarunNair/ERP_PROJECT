@@ -241,7 +241,13 @@
     <div class="right">
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search by AssetName..." aria-label="Search">
+            <!--
+            <p>User Role: {{ user_role }}, Add Asset: {{ add_asset }}</p>
+            -->   
+            
+            {% if user_role == 'admin' or add_asset %}
             <button class="add-button" aria-label="Add Asset" id="addUserButton"><i class="fas fa-plus"></i> Add</button>
+            {% endif %}
         </div>
         <div class="table-box">
             <h2>Asset List</h2>

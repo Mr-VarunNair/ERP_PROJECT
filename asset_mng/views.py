@@ -47,7 +47,12 @@ def ciso_dashboard(request):
     return render(request,'asset_mng/ciso.html')
 
 def asset_owner_dashboard(request):
-    return render(request, 'asset_mng/asset_owner.html')
+    username = request.session.get('username',None)
+    user_role = request.session.get('role',None)
+
+    if not username:
+        return redirect('asset_login')
+    return render(request, 'asset_mng/asset_owner.html',{'username':username,'user_role':user_role})
 
 
 def asset_login(request):
@@ -60,6 +65,7 @@ def asset_login(request):
                 if user is not None:
                     request.session['username'] = user.username
                     request.session['role'] = user.role     #pass the user's role to the template
+                    print(f"Session Data: {request.session['username']}, {request.session['role']}")  # Debugging statement
                     if user.role == 'admin':
                         return redirect('admin_dashboard')
                     elif user.role == 'head':
@@ -76,6 +82,7 @@ def asset_login(request):
                 messages.error(request, 'Invalid username or password')
     
     return render(request, 'asset_mng/asset_mng.html')
+
 
 def roles(request):
     return render(request,'asset_mng/roles.html')
@@ -105,7 +112,7 @@ def privilege_head(request):
     if not username:
         return redirect('asset_login')
     return render(request,'asset_mng/privilege_head.html',{'username':username})
-
+'''
 @csrf_exempt
 def privilege_asset_owner(request):
     username =request.session.get('username',None)
@@ -117,18 +124,57 @@ def privilege_asset_owner(request):
         add_asset = request.POST.get('add_asset') == 'on'
         asset_owner.add_asset = add_asset
         asset_owner.save()
+
         return redirect('privilege_asset_owner')
 
     return render(request, 'asset_mng/privilege_asset_owner.html', {
         'username': username,
         'add_asset': asset_owner.add_asset,
     })
+'''
+@csrf_exempt
+def privilege_asset_owner(request):
+    username = request.session.get('username', None)
+    if not username:
+        return redirect('asset_login')
+    
+    user = UserDetails.objects.get(username=username)
+    
+    if request.method == 'POST':
+        add_asset = request.POST.get('add_asset') == 'on'
+        AssetOwner_Privilege.objects.all().update(add_asset=add_asset)
+        return redirect('privilege_asset_owner')
+    
+    # Check if any asset owner has add_asset set to True to set the checkbox state
+    any_add_asset = AssetOwner_Privilege.objects.filter(add_asset=True).exists()
+
+    return render(request, 'asset_mng/privilege_asset_owner.html', {
+        'username': username,
+        'add_asset': any_add_asset,
+    })
+
 
 def asset_list(request):
     users = Asset_Table.objects.all()
-    user_role = request.session.get('role')
+    user_role = request.session.get('role',None)
+    add_asset = False                    # Default value for add_asset privilege
+
+    if user_role == 'asset_owner':      # Check if the logged-in user is an asset owner
+        username = request.session.get('username',None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                #print(f"User found: {user}")  # Debugging statement
+                privilege = AssetOwner_Privilege.objects.get(user=user)
+                add_asset = privilege.add_asset
+                #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")
+    #print(f"user_role = {user_role}, add_asset = {add_asset}")  # Debugging statement
     return render(request, 'asset_mng/asset_pro.html', {
-        'users': users,'user_role':user_role
+        'users': users,'user_role':user_role,'add_asset':add_asset,
     })
 
 
