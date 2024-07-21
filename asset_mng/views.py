@@ -1,12 +1,12 @@
-from django.contrib.auth import login,logout,authenticate
+from django.contrib.auth import logout,authenticate
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from . models import UserDetails,Asset_Table,AssetOwner_Privilege
-#from django . http import JsonResponse
-#from .models import UserPreference
+#from django.contrib.auth.decorators import login_required
+from . models import UserDetails,Asset_Table,AssetOwner_Privilege,Department,Employee,LocTable,Category
 from django.views.decorators.csrf import csrf_exempt
-import json
+from django.http import HttpResponse
+import csv
+#import json
 
 
 # Create your views here.
@@ -84,6 +84,355 @@ def asset_login(request):
     return render(request, 'asset_mng/asset_mng.html')
 
 
+def user_list(request):
+    users=UserDetails.objects.all()
+    departments = Department.objects.all()
+    locations=LocTable.objects.all()
+    return render(request,'asset_mng/user.html',{'users':users,'departments': departments,'locations':locations})
+
+def save_user(request):
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        phone_no = request.POST.get('phone_no')
+        email = request.POST.get('email') 
+        location = request.POST.get('location')
+        department = request.POST.get('department')
+        status = request.POST.get('status')
+        role = request.POST.get('role')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        
+        new_user = UserDetails(
+            name=name,
+            phone_no=phone_no,
+            email=email,
+            location=location,
+            department=department,
+            status=status,
+            role=role,
+            username=username,
+            password=password
+        )
+        new_user.save()
+        users = UserDetails.objects.all().order_by('id')
+        for index, use in enumerate (users,start=1):
+            UserDetails.objects.filter(pk=use.pk).update(sl_num= index)
+
+
+        return redirect('user_list')  
+
+    return render(request, 'user.html') 
+
+def edit_user(request,user_id):
+    if request.method == 'POST':
+        user_id = request.POST.get('id')
+        user = get_object_or_404(UserDetails, pk=user_id)
+        user.name = request.POST.get('name')
+        user.phone_no = request.POST.get('phone_no')
+        user.email = request.POST.get('email')
+        user.location = request.POST.get('location')
+        user.department = request.POST.get('department')
+        user.status = request.POST.get('status')
+        user.role = request.POST.get('role')
+        user.username = request.POST.get('username')
+        user.password = request.POST.get('password')
+        user.save()
+        messages.success(request, 'User updated successfully.')
+        return redirect('user_list')  # Redirect to user list page
+    else:
+        return redirect('user_list')  # Redirect if not a POST request    
+
+def delete_user(request, user_id):
+    user = get_object_or_404(UserDetails, id=user_id)
+    if request.method == 'POST':
+       
+        user.delete()
+        users = UserDetails.objects.all().order_by('id')
+        for index, use in enumerate (users,start=1):
+            UserDetails.objects.filter(pk=use.pk).update(sl_num= index)
+
+
+        return redirect('user_list')  
+    
+    return redirect('user_list')
+
+def department_list(request):
+    departments = Department.objects.all()
+    return render(request, 'asset_mng/department_list.html', {'departments': departments})
+
+def edit_department(request,department_id):
+    if request.method == 'POST':
+        department_id = request.POST.get('id')
+        department = get_object_or_404(Department, id=department_id)
+        department.department = request.POST.get('department')
+        department.location = request.POST.get('location')
+        department.status = request.POST.get('status')
+        
+        department.save()
+        messages.success(request, 'Department updated successfully.')
+        return redirect('department')  # Redirect to user list page
+    else:
+        return redirect('department')  # Redirect if not a POST request 
+
+def delete_department(request, department_id):
+    department = get_object_or_404(Department, pk=department_id)
+    
+    if request.method == 'POST':
+        department.delete()       
+        
+        # Update sl_num for remaining departments
+        departments = Department.objects.all().order_by('id')
+        for index, dept in enumerate(departments, start=1):
+            Department.objects.filter(pk=dept.pk).update(sl_num=index)
+
+        messages.success(request, 'Department deleted successfully.')
+        return redirect('department')  # Replace 'department_list' with your actual URL name
+    
+    # Handle GET request if needed (typically to show confirmation or handle errors)
+    return redirect('department')  # Redirect to a relevant page
+
+def add_department(request):
+    if request.method == 'POST':
+        department_name = request.POST.get('department')
+        location = request.POST.get('location')
+        status = request.POST.get('status')  
+
+        new_department = Department(
+            department=department_name,
+            location=location,
+            status=status
+        )
+        new_department.save()
+
+        departments = Department.objects.all().order_by('id')
+        for index, dept in enumerate(departments, start=1):
+            Department.objects.filter(pk=dept.pk).update(sl_num=index)
+
+        return redirect('department')
+
+    return render(request, 'asset_mng/department_list.html')
+
+
+def location_list(request):
+    users=LocTable.objects.all()
+    return render(request,'asset_mng/location_pro.html',{'users':users})
+
+
+def add_location(request):
+    if request.method == 'POST':
+        location = request.POST.get('location')
+        loc_status = request.POST.get('loc_status')
+        
+        location_loc = LocTable(
+            location=location,
+            loc_status=loc_status,
+        )
+        location_loc.save()
+
+        locations=LocTable.objects.all().order_by('id')
+        for index, loc in enumerate(locations,start=1):
+            LocTable.objects.filter(pk=loc.pk).update(sl_num=index)
+            
+        return redirect('location_list') 
+      
+    return render(request, 'asset_mng/location_pro.html')
+
+def delete_loc(request, location_id):
+    user = get_object_or_404(LocTable, id=location_id)
+    if request.method == 'POST':
+        user.delete()
+
+        locations=LocTable.objects.all().order_by('id')
+        for index, loc in enumerate(locations,start=1):
+            LocTable.objects.filter(pk=loc.pk).update(sl_num=index)
+
+        messages.success(request, 'location deleted successfully.')
+        return redirect('location_list')
+    else:
+        messages.error(request, 'Invalid request method.')
+        return redirect('location_list')
+
+
+def edit_location(request,location_id):
+    if request.method == 'POST':
+        
+        print(request.POST)
+        location = get_object_or_404(LocTable, pk=location_id)
+        location.location = request.POST.get('location')
+        loc_status = request.POST.get('loc_status')
+
+        if loc_status:
+            location.loc_status = loc_status
+        else:
+            messages.error(request, 'Location status is required.')
+            return redirect('location_list')
+
+        location.save()
+        messages.success(request, 'location updated successfully.')
+        return redirect('location_list')
+    
+    return redirect('location_list')
+
+
+def category_list(request):
+    categories = Category.objects.all()
+    return render(request, 'asset_mng/category.html', {'categories': categories})
+
+
+def save_category(request):
+    if request.method == 'POST':
+        category_type = request.POST.get('type')
+        status = request.POST.get('status')
+
+        
+        if category_type and status:
+            new_category = Category(
+                Category_type=category_type,
+                Status=status
+            )
+            new_category.save()
+
+            categories = Category.objects.all().order_by('id')
+            for index, categ in enumerate(categories,start=1):
+                Category.objects.filter(pk=categ.pk).update(sl_num = index)
+
+        return redirect('category_list')
+
+    return render(request, 'asset_mng/category.html')
+
+
+def delete_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    if request.method == 'POST':
+        category.delete()
+        categories = Category.objects.all().order_by('id')
+        for index, categ in enumerate(categories,start=1):
+         Category.objects.filter(pk=categ.pk).update(sl_num = index)
+        return redirect('category_list')
+    else:
+        return render(request, 'error.html', {'error_message': 'Invalid request method.'})
+
+def edit_category(request,category_id):
+    if request.method == 'POST':
+        
+        category = get_object_or_404(Category, pk=category_id)
+        category.Category_type = request.POST.get('type')
+        category.Status = request.POST.get('status')
+
+        category.save()
+        messages.success(request, 'Category updated successfully.')
+        return redirect('category_list')
+    
+    return redirect('category_list')
+
+
+
+def employee(request):
+    employees = Employee.objects.all()
+    return render(request, 'asset_mng/employee.html', {'employees': employees})
+
+def delete_employee(request, employee_id):
+    employee = get_object_or_404(Employee, pk=employee_id)
+    
+    if request.method == 'POST':
+        employee.delete()
+
+        employees=Employee.objects.all().order_by('id')
+        for index, emp in enumerate(employees,start=1):
+            Employee.objects.filter(pk=emp.pk).update(sl_num=index)
+
+        messages.success(request,'Employee deleted successfully.')
+        return redirect('employee')  # Replace 'department_list' with your actual URL name
+    
+    # Handle GET request if needed (typically to show confirmation or handle errors)
+    return redirect('employee') 
+
+
+def edit_employee(request,employee_id):
+    if request.method == 'POST':
+        employee_id = request.POST.get('id')
+        employee = get_object_or_404(Employee, id=employee_id)
+        employee.employee_name = request.POST.get('employee_name')
+        employee.phone_no = request.POST.get('phone_no')
+        employee.email = request.POST.get('email')
+        employee.location = request.POST.get('location')
+        employee.department = request.POST.get('department')
+        employee.status = request.POST.get('status')
+        
+        employee.save()
+        messages.success(request, 'Employee updated successfully.')
+        return redirect('employee')  # Redirect to employee list page
+    else:
+        return redirect('employee')  # Redirect if not a POST request
+
+
+def add_employee(request):
+    if request.method == 'POST':
+        employee_name = request.POST.get('employee_name')
+        phone_no = request.POST.get('phone_no')
+        email = request.POST.get('email')
+        location = request.POST.get('location')
+        department = request.POST.get('department')
+        status = request.POST.get('status')
+        
+
+        # Create a new Employee object and save it to the database
+        new_employee = Employee(
+            employee_name=employee_name,
+            phone_no=phone_no,
+            email=email,
+            location=location,
+            department=department,
+            status=status
+        )
+        new_employee.save()
+
+        employees=Employee.objects.all().order_by('id')
+        for index, emp in enumerate(employees,start=1):
+            Employee.objects.filter(pk=emp.pk).update(sl_num=index)
+
+        messages.success(request, 'Employee added successfully.')
+        return redirect('employee')  # Redirect to employee list page
+
+    return render(request, 'asset_mng/employee_list.html')  # Adjust the template name as necessary
+
+
+def reports_view(request):
+    context = {
+        'tables': ['UserTable', 'Department'],
+        'data': None,
+        'selected_table': None,
+    }
+    
+    if request.method == 'POST':
+        selected_table = request.POST.get('table')
+        if selected_table == 'UserDetails':
+            context['data'] = UserDetails.objects.all()
+            context['selected_table'] = 'UserTable'
+        elif selected_table == 'Department':
+            context['data'] = Department.objects.all()
+            context['selected_table'] = 'Department'
+        
+        if 'export' in request.POST:
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = f'attachment; filename="{selected_table}.csv"'
+            
+            writer = csv.writer(response)
+            if selected_table == 'UserDetails':
+                writer.writerow(['Name', 'Phone No', 'Email', 'Location', 'Department', 'Status', 'Role', 'Username', 'Password'])
+                for user in context['data']:
+                    writer.writerow([user.name, user.phone_no, user.email, user.location, user.department, user.status, user.role])
+            elif selected_table == 'Department':
+                writer.writerow(['Department', 'Location', 'Status'])
+                for department in context['data']:
+                    writer.writerow([department.department, department.location, department.status])
+            return response
+
+    return render(request, 'asset_mng/reports.html', context)
+
+
 def roles(request):
     return render(request,'asset_mng/roles.html')
 
@@ -112,26 +461,7 @@ def privilege_head(request):
     if not username:
         return redirect('asset_login')
     return render(request,'asset_mng/privilege_head.html',{'username':username})
-'''
-@csrf_exempt
-def privilege_asset_owner(request):
-    username =request.session.get('username',None)
-    if not username:
-        return redirect('asset_login')
-    user = UserDetails.objects.get(username = username)
-    asset_owner, created = AssetOwner_Privilege.objects.get_or_create(user=user)
-    if request.method == 'POST':
-        add_asset = request.POST.get('add_asset') == 'on'
-        asset_owner.add_asset = add_asset
-        asset_owner.save()
 
-        return redirect('privilege_asset_owner')
-
-    return render(request, 'asset_mng/privilege_asset_owner.html', {
-        'username': username,
-        'add_asset': asset_owner.add_asset,
-    })
-'''
 @csrf_exempt
 def privilege_asset_owner(request):
     username = request.session.get('username', None)
@@ -142,15 +472,24 @@ def privilege_asset_owner(request):
     
     if request.method == 'POST':
         add_asset = request.POST.get('add_asset') == 'on'
-        AssetOwner_Privilege.objects.all().update(add_asset=add_asset)
+        view_asset = request.POST.get('view_asset') == 'on'
+        edit_asset = request.POST.get('edit_asset') == 'on'
+        delete_asset = request.POST.get('delete_asset') == 'on'
+        AssetOwner_Privilege.objects.all().update(add_asset=add_asset, view_asset = view_asset, edit_asset = edit_asset, delete_asset = delete_asset)
         return redirect('privilege_asset_owner')
     
     # Check if any asset owner has add_asset set to True to set the checkbox state
     any_add_asset = AssetOwner_Privilege.objects.filter(add_asset=True).exists()
+    any_view_asset = AssetOwner_Privilege.objects.filter(view_asset = True).exists()
+    any_edit_asset = AssetOwner_Privilege.objects.filter(edit_asset = True).exists()
+    any_delete_asset = AssetOwner_Privilege.objects.filter(delete_asset=True).exists()
 
     return render(request, 'asset_mng/privilege_asset_owner.html', {
         'username': username,
         'add_asset': any_add_asset,
+        'view_asset': any_view_asset,
+        'edit_asset': any_edit_asset,
+        'delete_asset': any_delete_asset
     })
 
 

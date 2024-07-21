@@ -1,0 +1,477 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-abc123..." crossorigin="anonymous" />
+    <style>
+        .right {
+            width: 80%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow: auto;
+        }
+        .search-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .search-container input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .search-container .add-button {
+            padding: 8px 16px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+            
+        }
+        .search-container .add-button:hover {
+            background-color: #0056b3;
+        }
+    
+
+        .table-box {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .table-box h2 {
+            margin-top: 0;
+            font-size: 24px;
+            color: #333;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #575d64;
+            color: #ddd;
+        }
+        .edit-icon{
+            color: #201190;
+            cursor: pointer;
+            text-align: center;
+        }
+        .delete-icon {
+            color: #9b0123;
+            cursor: pointer;
+            text-align: center;
+            border:none;
+            text-align: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 1% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            
+        }
+        .form-container {
+            width: 100%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-header {
+            background-color: #6c757d;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-size: 24px;
+        }
+        .form-body {
+            padding: 10px;
+        }
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+           
+        }
+        .form-group label {
+            flex-basis: 20%;
+            padding: 10px 0;
+        }
+        .form-group input, .form-group select {
+            flex-basis: 85%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-buttons button {
+            width: 48%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-buttons .save-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        .form-buttons .cancel-button {
+            background-color: #ed1616;
+            color: white;
+        }
+        .reset-btn{
+            background-color: #ed1616;
+            color: white;
+        
+        }
+        
+
+.editusername, .editpassword {
+            display: block; /* or use inline-block or other as needed */
+            visibility: visible;
+}
+
+
+  .close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  dialog{
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    width: 25%;
+}
+dialog::backdrop{
+    background: rgba(0,0,0,0.5);
+}
+.hidden{
+    display: none;
+}
+.button-container{
+    display: flex;
+    justify-content: center;
+    margin-top: 19px;
+    margin-left: 10px;
+}
+.button-container button{
+    text-align: center;
+    padding: 10px 20px;
+    margin: 0 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    transition: background-color 0.3s;
+    
+}
+.button-container button:hover{
+    background-color: #0056b3;
+}
+       
+
+    </style>
+</head>
+<body>
+    {% include 'asset_mng/admin_sidebar.html' %}
+    <div class="right">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search by Location..." aria-label="Search">
+            <button class="add-button" aria-label="Add Loc" id="addLocationBtn"><i class="fas fa-plus"></i> Add</button>
+        </div>
+       
+    
+        <div class="table-box">
+            <h2>LOCATION</h2>
+            <div class="table-container">
+                <table id="locationTable" role="table">
+                    <thead>
+                        <tr>
+                            <th>Serial No</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for location in users %}  
+                       <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{location.location}}</td>
+                        <td>{{location.loc_status}}</td>
+                     
+                        <td>
+                            <a class="edit-icon" data-id="{{location.id}}"><i class="fas fa-edit"></i></a>
+                    
+                        </td>
+                        <td>
+                            <form action="{% url 'delete_loc' location.id %}" method="post">
+                                {% csrf_token %}
+                               <button type="submit" class="delete-icon"><i class="fas fa-trash"></i></button>
+                        </form>    
+                        </td>
+                        </tr>
+                        
+                        {% endfor %}
+                    </tbody>
+                    
+                </table>
+                <div id ="noResultsMessage" style="display: none; text-align: center;" ><h3>NO RECORDS FOUND</h3></div>
+            </div>
+            <dialog id="confirmDialog">
+                <form method="dialog">
+                    <p>Are you sure you want to delete this asset?</p>
+                <div class="button-container">
+                    <button value="yes">Yes</button>
+                    <button value="no">No</button>
+                </div>
+                </form>
+            </dialog>   
+        </div>
+    </div>
+   
+
+<!-- The Modal -->
+<div id="addLocationModal" class="modal">
+    <div class="modal-content">
+        <div class="form-container">        
+            <div class="form-header" id="form-header">
+                ADD LOCATION
+            </div>
+            <div class="form-body">
+                <form id="addLocationForm" method="POST" enctype="multipart/form-data" action="{% url 'add_location' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="location">Location:</label>
+                        <input  type="text" required id="location" name="location" placeholder="location"><br>
+                    </div>
+                    <div class="form-group">
+                        <label for="status" >Status:</label>
+                        <select id="active" required  name="loc_status">
+                            <option value="" disabled selected>--Select--</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                        </div>
+                    <div class="form-buttons">
+                        <button class="save-btn" type="submit">Save</button>
+                        <button class="cancel-button" type="button" id="resetAddFormBtn">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+  
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="form-container">
+            <div class="form-header" id="formHeader">
+                Edit Location
+            </div>
+            <div class="form-body">
+                <!-- Form for Editing Category -->
+                <form id="editLocationForm" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" id="editLocationId" name="id">
+                    <div class="form-group">
+                        <label for="editlocationType">Location</label>
+                        <input type="text" id="editlocationType" name="location">
+                    </div>
+                    <div class="form-group">
+                        <label for="editlocationStatus">Status</label>
+                        <select  id="editlocationStatus" name="loc_status" required>
+                            <option value=""disabled selected>--Select--</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="save-btn">Save</button>
+                        <button type="button"  class="reset-btn" onclick="closeEditModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+  </div>
+<script>
+    
+    document.addEventListener('DOMContentLoaded', function() {
+    
+    const addLocationBtn = document.getElementById('addLocationBtn');
+    const locModal = document.getElementById('addLocationModal');
+    const editModal = document.getElementById('editModal');
+    const editIcons = document.querySelectorAll('.edit-icon');
+    const editLocationForm = document.getElementById('editLocationForm');
+    const editlocationType = document.getElementById('editlocationType');
+    const editlocationStatus = document.getElementById('editlocationStatus');
+    const resetFormBtn = document.getElementById('resetAddFormBtn');
+    const settingsLink = document.getElementById('settings-link');
+    const searchInput= document.getElementById('searchInput');
+    const addForm=document.getElementById('addLocationForm');
+    
+
+     
+    // Search functionality
+searchInput.addEventListener('input', function() {
+        const filter = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#locationTable tbody tr');
+        let hasResults = false;
+
+        rows.forEach(row => {
+            const locationType = row.cells[1].textContent.toLowerCase();
+            if (locationType.includes(filter)) {
+                row.style.display = '';
+                hasResults = true;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        noResultsMessage.style.display = hasResults ? 'none' : 'block';
+    });
+    
+    addLocationBtn.addEventListener('click', function() {
+        locModal.style.display = 'block';
+    });
+    resetFormBtn.addEventListener('click',function(){
+        addForm.reset();
+
+    });
+    function closeEditModal(){
+        editModal.style.display = 'none';
+    }
+  
+    editIcons.forEach(icon => {
+        icon.addEventListener('click', function() {
+            const locationId = this.getAttribute('data-id');
+            const row = this.parentElement.parentElement;
+            const location = row.querySelector('td:nth-child(2)').textContent.trim();
+            const status = row.querySelector('td:nth-child(3)').textContent.trim();
+
+            editlocationType.value = location;
+            editlocationStatus.value = status;
+            editLocationForm.action = `/location_list/edit/${locationId}/`;
+
+            editModal.style.display = 'block';
+        });
+    });
+
+
+    window.addEventListener('click', function(event) {
+        if (event.target === locModal) {
+            locModal.style.display = 'none';
+        } else if (event.target === editModal) {
+            editModal.style.display = 'none';
+        }
+    });
+    const cancelbutton =editLocationForm.querySelector('.reset-btn');
+     cancelbutton.addEventListener('click',function(){
+        closeEditModal();
+     });
+
+});
+ 
+const deleteButtons = document.querySelectorAll('.delete-icon');
+            const dialog = document.getElementById('confirmDialog');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const form = button.closest('form');
+
+                    // Open the dialog
+                    dialog.showModal();
+
+                    // Handle dialog closing
+                    dialog.addEventListener('close', function() {
+                        if (dialog.returnValue === 'yes') {
+                            form.submit(); // Submit the form if 'yes' is selected
+                        }
+                    }, { once: true });
+                });
+            });
+
+            // Handle clicking outside dialog to close
+            dialog.addEventListener('click', function(event) {
+                if (event.target === dialog) {
+                    dialog.close('no'); // Close dialog if clicked outside
+                }
+            });
+
+            // Handle clicking on 'No' button to close dialog
+            dialog.querySelectorAll('button').forEach(button => {
+                button.addEventListener('click', function() {
+                    dialog.close(button.value);
+                });
+            });
+
+            // Handle close button on dialog
+            document.getElementById('closeDialog').addEventListener('click', function() {
+                dialog.close('no'); // Close dialog if close button clicked
+            });
+        
+                
+
+</script>
+</body>
+</html>

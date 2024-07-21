@@ -73,7 +73,14 @@
             color: #db0739;
             cursor: pointer;
             text-align: center;
+            border: none;
         }
+        .view-icon{
+            color: #1f04e6;
+            cursor: pointer;
+            text-align: center;
+        }
+
         
         .modal {
             display: none;
@@ -230,6 +237,40 @@
             display: block; /* or use inline-block or other as needed */
             visibility: visible;
 }
+dialog{
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    width: 25%;
+}
+dialog::backdrop{
+    background: rgba(0,0,0,0.5);
+}
+.hidden{
+    display: none;
+}
+.button-container{
+    display: flex;
+    justify-content: center;
+    margin-top: 19px;
+    margin-left: 80px;
+}
+.button-container button{
+    text-align: center;
+    padding: 10px 20px;
+    margin: 0 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: -30px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    transition: background-color 0.3s;
+    
+}
+.button-container button:hover{
+    background-color: #0056b3;
+}
     </style>
 </head>
 <body>
@@ -277,9 +318,15 @@
                             <td>{{user.Status}}</td>
                             <td>{{user.Item_code}}</td>
                             <td>{{user.Assigned_To}}</td>
-                            <td>{{user.images}}</td>
+                            <td>
+                                {% if user.images and user.images.url %}
+                                    <img src="{{ user.images.url }}" alt="{{ user.Asset_name }}" width="100">
+                                {% else %}
+                                    No image available
+                                {% endif %}    
+                            </td>
 
-                            <td class="edit-icon">
+                            <td class="view-icon">
                                 <a href="{% url 'view_asset' user.id %}">
                                     <i class="fas fa-eye"></i>
                                 </a>
@@ -317,7 +364,7 @@
                     <div class="form-container">
                         <div class="form-header">Add Asset</div>
                         <div class="form-body">
-                            <form id="addAssetForm" method="POST" action="{% url 'add_asset' %}">
+                            <form id="addAssetForm" method="POST" action="{% url 'add_asset' %}" enctype="multipart/form-data">
                                 {% csrf_token %}  
                                 <div class="form-group">
                                     <label for="asset_name">Asset Name:*</label>
@@ -394,11 +441,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="myFile">Supporting Docs</label>
-                                    <input type="file" id="myFile" name="Supporting_docs">
+                                    <input type="file" id="myFile" name="Supporting_docs" accept=".pdf,.doc,.docx">
                                 </div>
                                 <div class="form-group">
                                     <label for="asset_img">Image Of Asset</label>
-                                    <input type="file" id="asset_img" name="images">
+                                    <input type="file" id="asset_img" name="images"  accept="image/*">
                                     <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width:100%; height:auto;">
                                 </div>
                                 <div class="form-group">
@@ -494,11 +541,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="editMyFile">Supporting Docs:</label>
-                                    <input type="file" id="editMyFile" name="Supporting_docs">
+                                    <input type="file" id="editMyFile" name="Supporting_docs" accept=".pdf,.doc,.docx">
                                 </div>
                                 <div class="form-group">
-                                    <label for="editAssetImg">Image Of Asset:</label>
-                                    <input type="file" id="editAssetImg" name="images">
+                                    <label for="editAssetImg">Image Of Asset</label>
+                                    <input type="file" id="editAssetImg" name="images"  accept="image/*">
                                     <img id="editImagePreview" src="#" alt="Image Preview" style="display:none; max-width:100%; height:auto;">
                                 </div>
                                 <div class="form-group">
@@ -514,151 +561,169 @@
                     </div>
                 </div>
             </div>
-    <script>
-        
-
-        document.addEventListener('DOMContentLoaded', function() {
-        // Add Asset Modal
-            const addModal = document.getElementById('myModal');
-            const addBtn = document.getElementById('addUserButton');
-            const addForm = document.getElementById('addAssetForm');
-            const resetFormBtn = document.getElementById('resetFormBtn');
-            const searchInput = document.getElementById('searchInput');
-            const deleteButtons = document.querySelectorAll('.delete-icon');
-            const dialog = document.getElementById('confirmDialog');
-
-        // Search functionality    
-            searchInput.addEventListener('input', function() {
-                const filter = this.value.toLowerCase();
-                const rows = document.querySelectorAll('#AssetTable tbody tr');
-                let hasResults = false;
             
-                rows.forEach(row => {
-                    const AssetName = row.cells[1].textContent.toLowerCase();
-                    if (AssetName.includes(filter)) {
-                        row.style.display = '';
-                        hasResults = true;
-                    } else {
-                        row.style.display = 'none';
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const addUserButton = document.getElementById('addUserButton');
+                    const addModal = document.getElementById('myModal');
+                    const addForm = document.getElementById('addAssetForm');
+                    const resetFormBtn = document.getElementById('resetFormBtn');
+                    const searchInput = document.getElementById('searchInput');
+                    const noResultsMessage = document.getElementById('noResultsMessage');
+            
+                    // Search functionality
+                    searchInput.addEventListener('input', function() {
+                        const filter = this.value.toLowerCase();
+                        const rows = document.querySelectorAll('#AssetTable tbody tr');
+                        let hasResults = false;
+            
+                        rows.forEach(row => {
+                            const AssetName = row.cells[1].textContent.toLowerCase();
+                            if (AssetName.includes(filter)) {
+                                row.style.display = '';
+                                hasResults = true;
+                            } else {
+                                row.style.display = 'none';
+                            }
+                        });
+            
+                        noResultsMessage.style.display = hasResults ? 'none' : 'block';
+                    });
+            
+                    addUserButton.onclick = function() {
+                        addModal.style.display = 'block';
+                    };
+            
+                    window.addEventListener('click', function(event) {
+                        if (event.target == addModal) {
+                            addModal.style.display = 'none';
+                        }
+                    });
+            
+                    resetFormBtn.addEventListener('click', function() {
+                        addForm.reset();
+                    });
+            
+                    // Edit icon click event handling
+                    const editIcons = document.querySelectorAll('.edit-icon');
+                    const editModal = document.getElementById('editModal');
+                    const editForm = document.getElementById('editForm');
+                    const editAssetName = document.getElementById('editAssetName');
+                    const editAssetType = document.getElementById('editAssetType');
+                    const editStatus = document.getElementById('editStatus');
+                    const editItemCode = document.getElementById('editItemCode');
+                    const editAssignedTo = document.getElementById('editAssignedTo');
+                    const editAssetImg = document.getElementById('editAssetImg');
+                    const editSerial = document.getElementById('editSerial');
+                    const editModel = document.getElementById('editModelNumber');
+                    const editMachine = document.getElementById('editMachine');
+                    const editMovable = document.getElementById('editMovable');
+                    const editVendor = document.getElementById('editVendor');
+                    const editmaintain = document.getElementById('maintain');
+                    const editPrice = document.getElementById('editPrice');
+                    const editDate = document.getElementById('editDate');
+                    const editExpiry = document.getElementById('editExpiry');
+                    const editAge = document.getElementById('editAge');
+                    const editMyFile = document.getElementById('editMyFile');
+                    const editNotes = document.getElementById('editNotes');
+            
+                    editIcons.forEach(icon => {
+                        icon.addEventListener('click', function() {
+                            const assetId = this.querySelector('i').getAttribute('data-id');
+                            const row = this.closest('tr');
+                            const AssetName = row.cells[1].textContent.trim();
+                            const AssetType = row.cells[2].textContent.trim();
+                            const Status = row.cells[3].textContent.trim();
+                            const ItemCode = row.cells[4].textContent.trim();
+                            const AssignedTo = row.cells[5].textContent.trim();
+                            const AssetImg = row.cells[6].textContent.trim();
+                            const Serial_number = row.getAttribute('data-Serial_number');
+                            const Model_number = row.getAttribute('data-Model_number');
+                            const machine = row.getAttribute('data-Machine');
+                            const movable = row.getAttribute('data-movable');
+                            const vendor = row.getAttribute('data-vendor');
+                            const maintenance = row.getAttribute('data-Maintenance');
+                            const price = row.getAttribute('data-price');
+                            const Year_of_purchasing = row.getAttribute('data-year_of_purchase');
+                            const Year_of_expiry = row.getAttribute('data-year_of_expiry');
+                            const age_life = row.getAttribute('data-age_life');
+                            const notes = row.getAttribute('data-notes');
+            
+                            editAssetName.value = AssetName;
+                            editAssetType.value = AssetType;
+                            editStatus.value = Status;
+                            editItemCode.value = ItemCode;
+                            editAssignedTo.value = AssignedTo;
+                            editAssetImg.value = '';
+                            editSerial.value = Serial_number;
+                            editModel.value = Model_number;
+                            editMachine.value = machine;
+                            editMovable.value = movable;
+                            editVendor.value = vendor;
+                            editmaintain.value = maintenance;
+                            editPrice.value = price;
+                            editDate.value = Year_of_purchasing;
+                            editExpiry.value = Year_of_expiry;
+                            editAge.value = age_life;
+                            editNotes.value = notes;
+            
+                            editForm.action = `/edit_asset/${assetId}/`;
+                            editModal.style.display = 'block';
+                        });
+                    });
+            
+                    // Function to close edit modal
+                    function closeEditModal() {
+                        editModal.style.display = 'none';
                     }
-                });
-                noResultsMessage.style.display = hasResults ? 'none' : 'block';    
-            });
-        // Open Add Asset Modal on Button Click
-            addBtn.addEventListener('click', function() {
-                addModal.style.display = 'block';
-            });
-        // Close Add Asset Modal when Clicking Outside of It
-            window.addEventListener('click', function(event) {
-                if (event.target == addModal) {
-                    addModal.style.display = 'none';
-                }
-            });
-        // Reset Add Asset Form on Button Click
-            resetFormBtn.addEventListener('click', function() {
-                addForm.reset();
-            });
-        // Delete User Confirmation
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', function(event) {
-                event.preventDefault();
-                const form = button.closest('form');
+            
+                    const cancelButton = editForm.querySelector('.reset-btn');
+                    cancelButton.addEventListener('click', function() {
+                        closeEditModal();
+                    });
+            
+                    // Optional: Reset edit form fields on modal close
+                    editModal.addEventListener('click', function(event) {
+                        if (event.target === editModal) {
+                            closeEditModal();
+                        }
+                    });
+                    const deleteButtons = document.querySelectorAll('.delete-icon');
+                    const dialog = document.getElementById('confirmDialog');
+            
+                    deleteButtons.forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            event.preventDefault();
+                            const form = button.closest('form');
             
                             // Open the dialog
-                dialog.showModal();
+                            dialog.showModal();
             
                             // Handle dialog closing
-                dialog.addEventListener('close', function() {
-                    if (dialog.returnValue === 'yes') {
-                        form.submit(); // Submit the form if 'yes' is selected
-                    }
-                }, { once: true });
-            });
-        });
-
-        // Edit Asset Modal
-        
-            const editIcons = document.querySelectorAll('.edit-icon');
-            const editModal = document.getElementById('editModal');
-            const editAssetForm = document.getElementById('editAssetForm');
-
-            const editAssetIdInput = document.getElementById('editAssetId');
-            const editassettypeInput = document.getElementById('editassettype');
-            const editassetnameInput = document.getElementById('editassetname');
-            const editserialInput = document.getElementById('editserial');
-            const editmodelInput = document.getElementById('editmodel');
-            const edititemInput = document.getElementById('edititem');
-            const editmachineInput = document.getElementById('editmachine');
-            const editmovableInput = document.getElementById('editmovable');
-            const editstatusInput = document.getElementById('editstatus');
-            const editvenderInput = document.getElementById('editvender');
-            const editmaintainInput= document.getElementById('editmaintain');
-            const editpriceInput = document.getElementById('editprice');
-            const editdateInput = document.getElementById('editdate');
-            const editexpiryInput = document.getElementById('editexpiry');
-            const editageInput = document.getElementById('editage');
-            const editmyFileInput = document.getElementById('editmyFile');
-            const editimgInput = document.getElementById('editimg');
-            const editnotesInput = document.getElementById('editnotes');
-            const cancelButton = document.getElementById('cancelEditButton');
-    // Open Edit Asset Modal on Edit Icon Click
-            editIcons.forEach(icon => {
-                icon.addEventListener('click', function() {
-                    const row = this.parentElement.parentElement;
-                // Get asset details from the table row
-                    const AssetId = row.querySelector('td:nth-child(1)').textContent;
-                    const assettype = row.querySelector('td:nth-child(2)').textContent;
-                    const assetname = row.querySelector('td:nth-child(3)').textContent;
-                    const serialnumber = row.querySelector('td:nth-child(4)').textContent;
-                    const modelnumber = row.querySelector('td:nth-child(5)').textContent;
-                    const itemcode = row.querySelector('td:nth-child(6)').textContent;
-                    const machine = row.querySelector('td:nth-child(7)').textContent;
-                    const movable = row.querySelector('td:nth-child(8)').textContent;
-                    const status = row.querySelector('td:nth-child(9)').textContent;
-                    const vender = row.querySelector('td:nth-child(10)').textContent;
-                    const maintain = row.querySelector('td:nth-child(10)').textContent;
-                    const price = row.querySelector('td:nth-child(11)').textContent;
-                    const date = row.querySelector('td:nth-child(12)').textContent;
-                    const expiry = row.querySelector('td:nth-child(13)').textContent;
-                    const age = row.querySelector('td:nth-child(10)').textContent;
-                    const myFile = row.querySelector('td:nth-child(10)').textContent;
-                    const images = row.querySelector('td:nth-child(10)').textContent;
-                    const notes = row.querySelector('td:nth-child(10)').textContent;
-
-
-                // Populate edit form fields with user data
-                    editAssetIdInput.value = AssetId;
-                    editassettypeInput.value = assettype;
-                    editassetnameInput.value = assetname;
-                    editserialInput.value = serialnumber;
-                    editmodelInput.value = modelnumber;
-                    edititemInput.value = itemcode;
-                    editmachineInput.value = machine;
-                    editmovableInput.value = movable;
-                    editstatusInput.value = status;
-                    editvenderInput.value = vender;
-                    editmaintainInput.value = maintain;
-                    editpriceInput.value = price;
-                    editdateInput.value = date;
-                    editexpiryInput.value = expiry;
-                    editageInput.value = age;
-                    editmyFileInput.value = myFile;
-                    editimgInput.value = images;
-                    editnotesInput.value = notes;
-                
-
-                // Show the edit modal
-                    editModal.style.display = 'block';
+                            dialog.addEventListener('close', function() {
+                                if (dialog.returnValue === 'yes') {
+                                    form.submit(); // Submit the form if 'yes' is selected
+                                }
+                            }, { once: true });
+                        });
+                    });
+            
+                    // Handle clicking outside dialog to close
+                    dialog.addEventListener('click', function(event) {
+                        if (event.target === dialog) {
+                            dialog.close('no'); // Close dialog if clicked outside
+                        }
+                    });
+            
+                    // Handle clicking on 'No' button to close dialog
+                    dialog.querySelectorAll('button').forEach(button => {
+                        button.addEventListener('click', function() {
+                            dialog.close(button.value);
+                        });
+                    });
+            
                 });
-            });
 
-        // Optional: Reset edit form fields on modal close
-            editModal.addEventListener('click', function(event) {
-                if (event.target === editModal) {
-                    closeEditModal();
-                }
-            });
-        });     
-</script>
-</body>
+        </script>
+    </body>
 </html>

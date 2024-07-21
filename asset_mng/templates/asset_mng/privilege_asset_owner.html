@@ -156,21 +156,28 @@ input:checked + .slider:before {
                         <tbody>
                                 <tr>
                                     <td>Assets</td>
+                                    <td></td>
+                                    <td></td>
+
                                     <td>
-                                
+                                        <label class="switch">
+                                            <input type="checkbox" name = "view_asset" {% if view_asset %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
                                     </td>
+
                                     <td>
-                                
+                                        <label class="switch">
+                                            <input type="checkbox" name = "edit_asset" {% if edit_asset %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
                                     </td>
-                                    
+
                                     <td>
-                                        
-                                    </td>
-                                    <td>
-                                        
-                                    </td>
-                                    <td>
-                                        
+                                        <label class="switch">
+                                            <input type="checkbox" name = "delete_asset" {% if delete_asset %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
                                     </td>
                                    
                                     <td>

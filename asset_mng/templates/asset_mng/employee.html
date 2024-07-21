@@ -1,0 +1,526 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-abc123..." crossorigin="anonymous" />
+    <title>Admin Dashboard</title>
+    <style>
+
+        .right {
+            width: 80%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow: auto;
+            
+        }
+        .search-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .search-container input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .search-container .add-button {
+            padding: 8px 16px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+        }
+        .search-container .add-button:hover {
+            background-color: #0056b3;
+        }
+        .table-box {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .table-box h2 {
+            margin-top: 0;
+            font-size: 24px;
+            color: #333;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #575d64;
+            color: #ddd;
+        }
+        .edit-icon{
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #007bff; /* Example: Adjust color as needed */
+        }
+        .delete-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #f44336; 
+        }
+
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 1% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            
+        }
+        .form-container {
+            width: 100%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-header {
+            background-color: #6c757d;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-size: 24px;
+        }
+        .form-body {
+            padding: 10px;
+        }
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            flex-basis: 20%;
+            padding: 10px 0;
+        }
+        .form-group input, .form-group select {
+            flex-basis: 75%; /* Adjust width to accommodate longer inputs */
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%; /* Ensure input fields take full width */
+            box-sizing: border-box;
+        }
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-buttons button {
+            width: 48%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-buttons .save-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        .form-buttons .reset-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .close-icon{
+            position: absolute;
+            top: 0px;
+            right: 5px;
+            color: #aaa;
+            font-size: 28px;
+            cursor: pointer;
+            transition:color 0.3s;
+        }
+        .close-icon:hover,
+        .close-icon:focus{
+            color: red;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        dialog {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 25%;
+        }
+        dialog::backdrop {
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .hidden {
+            display: none;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px; /* Adjust spacing */
+        }
+
+       .button-container button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+        .no-results {
+            text-align: center;
+            color:black;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    {% include 'asset_mng/admin_sidebar.html' %}
+
+    <div class="right">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search by Name...">
+                <button class="add-button"  id="add-button" type="button"><i class="fas fa-plus"></i> Add</button>
+            </div>
+        <div class="table-box">
+            <h2>Employee list</h2>
+            <div class="table-container">
+            <table id="employeeTable" role="table">
+                <thead>
+                    <tr>
+            
+                        <th>Sl.No</th>
+                        <th>Employee Name</th>
+                        <th>Phone No.</th>
+                        <th>Email</th>
+                        <th>Location</th>
+                        <th>Department</th>
+                        <th>Status</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employee in employees %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ employee.employee_name }}</td>
+                        <td>{{ employee.phone_no }}</td>
+                        <td>{{ employee.email}}</td>
+                        <td>{{ employee.location}}</td>
+                        <td>{{ employee.department}}</td>
+                        <td>{{ employee.status}}</td>
+                        <td>
+                            <a class="edit-icon" data-id="{{ employee.id }}"><i class="fas fa-edit"></i></a>
+                        </td>
+                        <td>
+                            <form action="{% url 'delete_employee' employee.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="delete-icon"><i class="fas fa-trash-alt"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div id="noResultsMessage" style="display: none;text-align: center;"><h3>No Records Found</h3></div>
+        </div>
+    
+    
+    <dialog id="confirmDialog">
+        <form method="dialog">
+            <p>Are you sure you want to delete this department?</p>
+            <div class="button-container">
+                <button value="yes">Yes</button>
+                <button value="no">No</button>
+            </div>
+        </form>
+    </dialog>
+
+    
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="form-container">
+                <div class="form-header" id="formHeader">
+                    Edit Employee
+                </div>
+                <div class="form-body">
+                <form id="editForm" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" id="editEmployeeId" name="id" >
+                    <div class="form-group">
+                        <label for="editEmployeeName">Name:</label>
+                        <input type="text" id="editEmployeeName" name="employee_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPhoneNumber">Phone Number:</label>
+                        <input type="text" id="editPhoneNumber" name="phone_no" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmail">Email:</label>
+                        <input type="email" id="editEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editLocation">Location:</label>
+                        <input type="text" id="editLocation" name="location" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDepartment">Department:</label>
+                        <input type="text" id="editDepartment" name="department" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStatus">Status:</label>
+                        <select id="editStatus" name="status" required>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="save-btn">Save</button>
+                        <button type="button" class="reset-btn" onclick="closeEditModal()">Cancel</button>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <div class="form-container"> 
+                <div class="form-header" id="formHeader">
+                    Add Employee
+                </div>
+                <div class="form-body">
+                <form id="addEmployeeForm" method="post" action="{% url 'add_employee' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="addEmployeeName">Name:</label>
+                        <input type="text" id="addEmployeeName" name="employee_name" placeholder="Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addPhoneNumber">Phone Number:</label>
+                        <input type="text" id="addPhoneNumber" name="phone_no" placeholder="Phone.no" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addEmail">Email:</label>
+                        <input type="email" id="addEmail" name="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addLocation">Location:</label>
+                        <input type="text" id="addLocation" name="location" placeholder="Location" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addDepartment">Department:</label>
+                        <input type="text" id="addDepartment" name="department" placeholder="Department" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addStatus">Status:</label>
+                        <select id="addStatus" name="status" required>
+                            <option value="" disabled selected>--Select--</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="save-btn">Save</button>
+                        <button type="button" class="reset-btn" onclick="closeModal()">Cancel</button>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    
+    <script>
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const editIcons = document.querySelectorAll('.edit-icon');
+            const editModal = document.getElementById('editModal');
+            const editForm = document.getElementById('editForm');
+            const editEmployeeId = document.getElementById('editEmployeeId');
+            const editEmployeeName = document.getElementById('editEmployeeName');
+            const editPhoneNumber = document.getElementById('editPhoneNumber');
+            const editEmail = document.getElementById('editEmail');
+            const editLocation = document.getElementById('editLocation');
+            const editDepartment = document.getElementById('editDepartment');
+            const editStatus = document.getElementById('editStatus');
+            
+            
+            editIcons.forEach(icon => {
+                icon.addEventListener('click', function() {
+                    const employeeId = this.getAttribute('data-id');
+                    const row = this.parentElement.parentElement;
+                    const employeeName = row.querySelector('td:nth-child(2)').textContent;
+                    const phoneNumber = row.querySelector('td:nth-child(3)').textContent;
+                    const email = row.querySelector('td:nth-child(4)').textContent;
+                    const location = row.querySelector('td:nth-child(5)').textContent;
+                    const department = row.querySelector('td:nth-child(6)').textContent;
+                    const status = row.querySelector('td:nth-child(7)').textContent;
+                    
+                    
+                    editEmployeeId.value = employeeId;
+                    editEmployeeName.value = employeeName;
+                    editPhoneNumber.value = phoneNumber;
+                    editEmail.value = email;
+                    editLocation.value = location;
+                    editDepartment.value = department;
+                    editStatus.value = status.toLowerCase();
+
+                    editForm.action = `/edit_employee/${employeeId}/`;
+                    
+                    
+                    editModal.style.display = 'block';
+                });
+            });
+            
+            function closeEditModal() {
+                editModal.style.display = 'none';
+            }
+            
+            const cancelButton=editForm.querySelector('.reset-btn');
+            cancelButton.addEventListener('click',function(){
+                closeEditModal();
+            })
+            
+            editModal.addEventListener('click', function(event) {
+                if (event.target === editModal) {
+                    closeEditModal();
+                }
+            });
+
+           
+                const addModal = document.getElementById('addModal');
+                const addBtn = document.getElementById('add-button');
+                const addForm = document.getElementById('addEmployeeForm');
+                const searchInput = document.getElementById('searchInput');
+            
+                // Open the add employee modal
+                addBtn.addEventListener('click', function() {
+                    addModal.style.display = 'block';
+                });
+
+                function closeModal() {
+                addModal.style.display = 'none';
+                addForm.reset();
+            }
+            
+            const cancelbutton=addForm.querySelector('.reset-btn');
+            cancelbutton.addEventListener('click',function(){
+                closeModal();
+            })
+                
+                // Close the modal when clicking outside the modal content
+                window.addEventListener('click', function(event) {
+                    if (event.target === addModal) {
+                        addModal.style.display = 'none';
+                    }
+                });
+                
+                
+            });
+
+            
+    searchInput.addEventListener('input', function() {
+        const filter = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#employeeTable tbody tr');
+        let hasResults = false;
+
+        rows.forEach(row => {
+            const employeeName = row.cells[1].textContent.toLowerCase();
+            if (employeeName.includes(filter)) {
+                row.style.display = '';
+                hasResults = true;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        noResultsMessage.style.display = hasResults ? 'none' : 'block';
+    });
+
+        
+        const deleteButtons = document.querySelectorAll('.delete-icon');
+        const dialog = document.getElementById('confirmDialog');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                const form = button.closest('form');
+
+                // Open the dialog
+                dialog.showModal();
+
+                // Handle dialog closing
+                dialog.addEventListener('close', function() {
+                    if (dialog.returnValue === 'yes') {
+                        form.submit(); // Submit the form if 'yes' is selected
+                    }
+                }, { once: true });
+            });
+        });
+
+        // Handle clicking outside dialog to close
+        dialog.addEventListener('click', function(event) {
+            if (event.target === dialog) {
+                dialog.close('no'); // Close dialog if clicked outside
+            }
+        });
+
+        // Handle clicking on 'No' button to close dialog
+        dialog.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function() {
+                dialog.close(button.value);
+            });
+        });
+    
+
+        
+    </script>
+</body>
+</html>

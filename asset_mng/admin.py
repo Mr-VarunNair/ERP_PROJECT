@@ -1,6 +1,6 @@
 from django.contrib import admin
 from . models import UserDetails
-from . models import Asset_Table
+from . models import Asset_Table,LocTable,Category,Department,Employee
 from . models import AssetOwner_Privilege
 
 
@@ -13,4 +13,11 @@ class AssetDetails(admin.ModelAdmin):               #to display asset datails as
 admin.site.register(UserDetails)
 admin.site.register(Asset_Table,AssetDetails)
 admin.site.register(AssetOwner_Privilege)
+admin.site.register(LocTable)
+admin.site.register(Category)
+admin.site.register(Department)
+admin.site.register(Employee)
+
+
+
 

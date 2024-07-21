@@ -146,7 +146,12 @@
             </div>
             <div class="form-group">
                 <label>Supporting Docs:</label>
-                <p>{{ asset.Supporting_docs }}</p>
+                {% if asset.Supporting_docs %}
+                    <p>{{ asset.Supporting_docs }}
+                    <a href="{{ asset.Supporting_docs.url }}" class="download-btn" download>Download</a></p>
+                {% else %}
+                    <p>No documents uploaded</p>
+                {% endif %}
             </div>
             <div class="form-group">
                 <label>Notes:</label>
