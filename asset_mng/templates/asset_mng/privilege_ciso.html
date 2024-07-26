@@ -89,331 +89,290 @@ input:checked + .slider:before {
     
 </head>
 <body>
-    {% include 'asset_mng/admin_sidebar.html' %}   
+    {% if user_role == 'admin' %}
+        {% include 'asset_mng/admin_sidebar.html' %}
+    {% elif user_role == 'ciso' %}
+        {% include 'asset_mng/ciso_sidebar.html' %}
+    {% endif %} 
     <div class="right">
         <div class="table-box">
             <h2>CISO PRIVILEGE</h2>
             <div class="table-container">
-                <table id="userTable" role="table">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Privilege Update</th>
-                            <th>Report Download</th>
-                            <th>Assign Asset</th>
-                            <th>Asset History</th>
-                            <th>View</th>
-                            <th>Edit</th>
-                            <th>Delete</th>
-                            <th>Add</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Assets</td>
-                            <td>
-                                
-                            </td>
-                            <td>
-                                
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>User</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Employee</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Location</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Department</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Category</td>
-                            <td></td>
-                            <td>
 
-                            </td>
-                            <td>
-
-                            </td>
-                            <td>
-                               
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Roles</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Privileges</td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                
-                            </td>
-                            <td>
-                                
-                            </td>
-                            <td>
-                                
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Reports</td>
-                            <td>
-                                
-                            </td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                
-                            </td>
-                            <td>
-                                
-                            </td>
-                            <td>
-                               
-
-                            </td>
-                        </tr>
-
-                    </tbody>
-                </table>
-                <div class="btn">
-                    <button type="submit" class="login-button">SAVE</button>
-
-                </div>
-
+                <form method="post" action="{% url 'privilege_ciso' %}" id="privilegeForm">
+                    {% csrf_token %}
+                    <table id="userTable" role="table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Privilege Update</th>
+                                <th>Report Download</th>
+                                <th>View</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                                <th>Add</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Assets</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_view_asset" {% if ciso_view_asset %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_edit_asset" {% if ciso_edit_asset %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_delete_asset" {% if ciso_delete_asset %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_add_asset" {% if ciso_add_asset %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>User</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_view_user" {% if ciso_view_user %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_edit_user" {% if ciso_edit_user %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_delete_user" {% if ciso_delete_user %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_add_user" {% if ciso_add_user %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Employee</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_view_employee" {% if ciso_view_employee %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_edit_employee" {% if ciso_edit_employee %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_delete_employee" {% if ciso_delete_employee %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_add_employee" {% if ciso_add_employee %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Location</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_view_location" {% if ciso_view_location %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_edit_location" {% if ciso_edit_location %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_delete_location" {% if ciso_delete_location %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_add_location" {% if ciso_add_location %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Department</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_view_department" {% if ciso_view_department %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_edit_department" {% if ciso_edit_department %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_delete_department" {% if ciso_delete_department %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_add_department" {% if ciso_add_department %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Category</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_view_category" {% if ciso_view_category %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_edit_category" {% if ciso_edit_category %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_delete_category" {% if ciso_delete_category %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_add_category" {% if ciso_add_category %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Privilege</td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_privilege_update" {% if ciso_privilege_update %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Reports</td>
+                                <td></td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="ciso_report_download" {% if ciso_report_download %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                    <div class="btn">
+                        <button type="submit" class="login-button">SAVE</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="modal-message"></p>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            $('#privilegeForm').on('submit', function(e){
+                e.preventDefault();  // Prevent the form from submitting the traditional way
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response){
+                        showModal('Changes saved successfully!');
+                    },
+                    error: function(xhr, errmsg, err) {
+                        showModal('An error occurred while saving changes.');
+                    }
+                });
+            });
+            var modal = document.getElementById("myModal");
+            var span = document.getElementsByClassName("close")[0];
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+            function showModal(message) {
+                document.getElementById("modal-message").textContent = message;
+                modal.style.display = "block";
+            }
+        });
+    </script>
 </body>
 </html>    

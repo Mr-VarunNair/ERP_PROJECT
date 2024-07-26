@@ -227,11 +227,24 @@
     </style>
 </head>
 <body>
-    {% include 'asset_mng/admin_sidebar.html' %}
+    {% if user_role == 'admin' %}
+        {% include 'asset_mng/admin_sidebar.html' %}
+    {% elif user_role == 'asset_owner' %}
+        {% include 'asset_mng/asset_owner_sidebar.html' %}
+    {% elif user_role == 'ciso' %}
+        {% include 'asset_mng/ciso_sidebar.html' %}
+    {% elif user_role == 'head' %}
+        {% include 'asset_mng/head_sidebar.html' %}        
+    {% endif %}
     <div class="right">
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search by department" />
-            <button class="add-button"  id="add-button" type="button"><i class="fas fa-plus"></i>Add</button>
+            {% if user_role == 'admin' or add_department %}
+            {% elif user_role == 'admin' or ciso_add_department %}
+            {% elif user_role == 'admin' or head_add_department %}
+
+                <button class="add-button"  id="add-button" type="button"><i class="fas fa-plus"></i>Add</button>
+            {% endif %}    
         </div>
     
         <div class="table-box">
@@ -245,8 +258,16 @@
                         <th>Department</th>
                         <th>Location</th>
                         <th>Status</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
+                        {% if user_role == 'admin' or edit_department %}
+                        {% elif user_role == 'admin' or ciso_edit_department %}
+                        {% elif user_role == 'admin' or head_edit_department %}
+                            <th>Edit</th>
+                        {% endif %}    
+                        {% if user_role == 'admin' or delete_department %}
+                        {% elif user_role == 'admin' or ciso_delete_department %}
+                        {% elif user_role == 'admin' or head_delete_department %}
+                            <th>Delete</th>
+                        {% endif %} 
                     </tr>
                 </thead>
                 <tbody>
@@ -256,16 +277,23 @@
                         <td>{{ department.department }}</td>
                         <td>{{ department.location }}</td>
                         <td>{{ department.status }}</td>
-                        <td >
-                            <a class="edit-icon" data-id="{{ department.id }}" id="edit-button"><i class="fas fa-edit"></i></a>
-                        </td>
-                        <td>
-                            <form action="{% url 'delete_department' department.id %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit" class="delete-icon"><i class="fas fa-trash-alt"></i></button>
-                            </form>
-                            
-                        </td>
+                        {% if user_role == 'admin' or edit_department %}
+                        {% elif user_role == 'admin' or ciso_edit_department %}
+                        {% elif user_role == 'admin' or head_edit_department %}
+                            <td >
+                                <a class="edit-icon" data-id="{{ department.id }}" id="edit-button"><i class="fas fa-edit"></i></a>
+                            </td>
+                        {% endif %}    
+                        {% if user_role == 'admin' or delete_department %}
+                        {% elif user_role == 'admin' or ciso_delete_department %}
+                        {% elif user_role == 'admin' or head_delete_department %}
+                            <td>
+                                <form action="{% url 'delete_department' department.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="delete-icon"><i class="fas fa-trash-alt"></i></button>
+                                </form> 
+                            </td>
+                        {% endif %}    
                     </tr>
                     {% endfor %}
                 </tbody>

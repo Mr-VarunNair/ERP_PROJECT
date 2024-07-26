@@ -230,11 +230,23 @@ dialog::backdrop{
     </style>
 </head>
 <body>
-    {% include 'asset_mng/admin_sidebar.html' %}
+    {% if user_role == 'admin' %}
+        {% include 'asset_mng/admin_sidebar.html' %}
+    {% elif user_role == 'asset_owner' %}
+        {% include 'asset_mng/asset_owner_sidebar.html' %}
+    {% elif user_role == 'ciso' %}
+        {% include 'asset_mng/ciso_sidebar.html' %}    
+    {% elif user_role == 'head' %}
+        {% include 'asset_mng/head_sidebar.html' %}     
+    {% endif %}
     <div class="right">
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search by Location..." aria-label="Search">
-            <button class="add-button" aria-label="Add Loc" id="addLocationBtn"><i class="fas fa-plus"></i> Add</button>
+            {% if user_role == 'admin' or add_location %}
+            {% elif user_role == 'admin' or ciso_add_location %}
+            {% elif user_role == 'admin' or head_add_location %}
+                <button class="add-button" aria-label="Add Loc" id="addLocationBtn"><i class="fas fa-plus"></i> Add</button>
+            {% endif %}    
         </div>
        
     
@@ -247,8 +259,16 @@ dialog::backdrop{
                             <th>Serial No</th>
                             <th>Location</th>
                             <th>Status</th>
-                            <th>Edit</th>
-                            <th>Delete</th>
+                            {% if user_role == 'admin' or edit_location %}
+                            {% elif user_role == 'admin' or ciso_edit_location %}
+                            {% elif user_role == 'admin' or head_edit_location %}
+                                <th>Edit</th>
+                            {% endif %}
+                            {% if user_role == 'admin' or delete_location %}
+                            {% elif user_role == 'admin' or ciso_delete_location %}
+                            {% elif user_role == 'admin' or head_delete_location %}
+                                <th>Delete</th>
+                            {% endif %}    
                         </tr>
                     </thead>
                     <tbody>
@@ -257,17 +277,24 @@ dialog::backdrop{
                         <td>{{forloop.counter}}</td>
                         <td>{{location.location}}</td>
                         <td>{{location.loc_status}}</td>
-                     
-                        <td>
-                            <a class="edit-icon" data-id="{{location.id}}"><i class="fas fa-edit"></i></a>
+                        {% if user_role == 'admin' or edit_location %}
+                        {% elif user_role == 'admin' or ciso_edit_location %}
+                        {% elif user_role == 'admin' or head_edit_location %}
+                            <td>
+                                <a class="edit-icon" data-id="{{location.id}}"><i class="fas fa-edit"></i></a>
                     
-                        </td>
-                        <td>
-                            <form action="{% url 'delete_loc' location.id %}" method="post">
-                                {% csrf_token %}
-                               <button type="submit" class="delete-icon"><i class="fas fa-trash"></i></button>
-                        </form>    
-                        </td>
+                            </td>
+                        {% endif %}  
+                        {% if user_role == 'admin' or delete_location %}  
+                        {% elif user_role == 'admin' or ciso_delete_location %}
+                        {% elif user_role == 'admin' or head_delete_location %}
+                            <td>
+                                <form action="{% url 'delete_loc' location.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="delete-icon"><i class="fas fa-trash"></i></button>
+                                </form>    
+                            </td>
+                        {% endif %}    
                         </tr>
                         
                         {% endfor %}

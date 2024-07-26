@@ -2,7 +2,7 @@ from django.contrib.auth import logout,authenticate
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
 #from django.contrib.auth.decorators import login_required
-from . models import UserDetails,Asset_Table,AssetOwner_Privilege,Department,Employee,LocTable,Category
+from . models import UserDetails,Asset_Table,AssetOwner_Privilege,Department,Employee,LocTable,Category,CISO_Privilege,Head_Privilege
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 import csv
@@ -36,23 +36,147 @@ def tenant_mng(request):
     return render(request,'tenant_mng.html')
 
 def admin_dashboard(request):
+    total_users = UserDetails.objects.count()
+    total_assets = Asset_Table.objects.count()
+    total_dept=Department.objects.count()
+    total_emp=Employee.objects.count()
     username =request.session.get('username',None)
+    name = request.session.get('name',None)
     if not username:
         return redirect('asset_login')
-    return render(request, 'asset_mng/admin_dashboard.html',{'username':username})
+    return render(request, 'asset_mng/admin_dashboard.html',{'username':username, 'name':name, 'total_users':total_users,'total_assets':total_assets, 'total_dept': total_dept, 'total_emp': total_emp })
 def head_dashboard(request):
-    return render(request,'asset_mng/head.html')
+    total_users = UserDetails.objects.count()
+    total_assets = Asset_Table.objects.count()
+    total_dept = Department.objects.count()
+    total_emp = Employee.objects.count()
+
+    username = request.session.get('username', None)
+    user_role = request.session.get('role', None)
+    name = request.session.get('name', None)
+
+    if not username:
+        return redirect('asset_login')
+
+    user = UserDetails.objects.get(username=username)
+    head_privileges = Head_Privilege.objects.filter(user=user)
+
+    head_privilege_update = head_privileges.filter(head_privilege_update=True).exists()
+    head_report_download = head_privileges.filter(head_report_download=True).exists()
+    head_view_user = head_privileges.filter(head_view_user=True).exists()
+    head_view_employee = head_privileges.filter(head_view_employee=True).exists()
+    head_view_location = head_privileges.filter(head_view_location=True).exists()
+    head_view_category = head_privileges.filter(head_view_category=True).exists()
+    head_view_department = head_privileges.filter(head_view_department=True).exists()
+
+    context = {
+        'username': username,
+        'user_role': user_role,
+        'name': name,
+        'head_privilege_update': head_privilege_update,
+        'head_report_download': head_report_download,
+        'head_view_user': head_view_user,
+        'head_view_employee': head_view_employee,
+        'head_view_location': head_view_location,
+        'head_view_category': head_view_category,
+        'head_view_department': head_view_department,
+        'total_users': total_users,
+        'total_assets': total_assets,
+        'total_dept': total_dept,
+        'total_emp': total_emp,
+    }
+    return render(request,'asset_mng/head_dashboard.html',context)
 
 def ciso_dashboard(request):
-    return render(request,'asset_mng/ciso.html')
-
-def asset_owner_dashboard(request):
+    total_users = UserDetails.objects.count()
+    total_assets = Asset_Table.objects.count()
+    total_dept=Department.objects.count()
+    total_emp=Employee.objects.count()
     username = request.session.get('username',None)
     user_role = request.session.get('role',None)
+    name = request.session.get('name',None)
 
     if not username:
         return redirect('asset_login')
-    return render(request, 'asset_mng/asset_owner.html',{'username':username,'user_role':user_role})
+    user = UserDetails.objects.get(username=username)
+    ciso_privileges = CISO_Privilege.objects.filter(user=user)
+
+    ciso_privilege_update = ciso_privileges.filter(ciso_privilege_update=True).exists()
+    ciso_report_download = ciso_privileges.filter(ciso_report_download=True).exists()
+    ciso_view_user = ciso_privileges.filter(ciso_view_user =True).exists()
+    #add_user = privileges.filter(add_user =True).exists()
+    ciso_view_employee = ciso_privileges.filter(ciso_view_employee =True).exists()
+    ciso_view_location = ciso_privileges.filter(ciso_view_location = True).exists()
+    ciso_view_category = ciso_privileges.filter(ciso_view_category = True).exists()
+    ciso_view_department = ciso_privileges.filter(ciso_view_department = True).exists()
+
+    context = {
+        'username': username,
+        'user_role': user_role,
+        'name': name,
+        'ciso_privilege_update': ciso_privilege_update,
+        'ciso_report_download': ciso_report_download,
+        'ciso_view_user' : ciso_view_user,
+        #'add_user' : add_user,
+        'ciso_view_employee' : ciso_view_employee,
+        'ciso_view_location' : ciso_view_location,
+        'ciso_view_category' : ciso_view_category,
+        'ciso_view_department' : ciso_view_department,
+        'total_users' : total_users,
+        'total_assets' : total_assets,
+        'total_dept' : total_dept,
+        'total_emp' : total_emp,
+
+
+    }
+    return render(request,'asset_mng/ciso_dashboard.html', context)
+
+
+def asset_owner_dashboard(request):
+    total_users = UserDetails.objects.count()
+    total_assets = Asset_Table.objects.count()
+    total_dept=Department.objects.count()
+    total_emp=Employee.objects.count()
+    username = request.session.get('username',None)
+    user_role = request.session.get('role',None)
+    name = request.session.get('name',None)
+
+    if not username:
+        return redirect('asset_login')
+    user = UserDetails.objects.get(username=username)
+    privileges = AssetOwner_Privilege.objects.filter(user=user)
+
+    privilege_update = privileges.filter(privilege_update=True).exists()
+    report_download = privileges.filter(report_download=True).exists()
+    view_user = privileges.filter(view_user =True).exists()
+    #add_user = privileges.filter(add_user =True).exists()
+    view_employee = privileges.filter(view_employee =True).exists()
+    view_location = privileges.filter(view_location = True).exists()
+    view_category = privileges.filter(view_category = True).exists()
+    view_department = privileges.filter(view_department = True).exists()
+
+    context = {
+        'username': username,
+        'user_role': user_role,
+        'name': name,
+        'privilege_update': privilege_update,
+        'report_download': report_download,
+        'view_user' : view_user,
+        #'add_user' : add_user,
+        'view_employee' : view_employee,
+        'view_location' : view_location,
+        'view_category' : view_category,
+        'view_department' : view_department,
+        'total_users' : total_users,
+        'total_assets' : total_assets,
+        'total_dept' : total_dept,
+        'total_emp' : total_emp,
+
+    }
+
+    return render(request, 'asset_mng/asset_owner.html', context)
+
+
 
 
 def asset_login(request):
@@ -63,9 +187,10 @@ def asset_login(request):
             try:
                 user = UserDetails.objects.get(username=username, password=password)
                 if user is not None:
+                    request.session['name'] = user.name
                     request.session['username'] = user.username
                     request.session['role'] = user.role     #pass the user's role to the template
-                    print(f"Session Data: {request.session['username']}, {request.session['role']}")  # Debugging statement
+                    #print(f"Session Data: {request.session['username']}, {request.session['role']}")  # Debugging statement
                     if user.role == 'admin':
                         return redirect('admin_dashboard')
                     elif user.role == 'head':
@@ -88,7 +213,132 @@ def user_list(request):
     users=UserDetails.objects.all()
     departments = Department.objects.all()
     locations=LocTable.objects.all()
-    return render(request,'asset_mng/user.html',{'users':users,'departments': departments,'locations':locations})
+    username = request.session.get('username', None)
+    user_role = request.session.get('role',None)
+    name = request.session.get('name',None)
+    view_user = False
+    add_user = False
+    edit_user = False
+    delete_user = False
+    privilege_update = False
+    report_download = False
+    view_employee = False
+    view_location = False
+    view_category = False
+    view_department = False
+
+    ciso_view_user = False
+    ciso_add_user = False
+    ciso_edit_user = False
+    ciso_delete_user = False
+    ciso_privilege_update = False
+    ciso_report_download = False
+    ciso_view_employee = False
+    ciso_view_location = False
+    ciso_view_category = False
+    ciso_view_department = False
+
+    head_view_user = False
+    head_add_user = False
+    head_edit_user = False
+    head_delete_user = False
+    head_privilege_update = False
+    head_report_download = False
+    head_view_employee = False
+    head_view_location = False
+    head_view_category = False
+    head_view_department = False
+
+
+
+    if user_role == 'asset_owner':      # Check if the logged-in user is an asset owner
+        username = request.session.get('username',None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                #print(f"User found: {user}")  # Debugging statement
+                privileges = AssetOwner_Privilege.objects.filter(user=user)
+                if privileges.exists():
+                    add_user = privileges.filter(add_user = True).exists()
+                    view_user = privileges.filter(view_user = True).exists()
+                    edit_user = privileges.filter(edit_user = True).exists()
+                    delete_user = privileges.filter(delete_user = True).exists()
+
+                    privilege_update = privileges.filter(privilege_update=True).exists()
+                    report_download = privileges.filter(report_download=True).exists()
+                    view_employee = privileges.filter(view_employee = True).exists()
+                    view_location = privileges.filter(view_location = True).exists()
+                    view_category = privileges.filter(view_category = True).exists()
+                    view_department = privileges.filter(view_department = True).exists()
+                #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")
+
+    elif user_role == 'ciso':      # Check if the logged-in user is an ciso
+        username = request.session.get('username',None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                #print(f"User found: {user}")  # Debugging statement
+                ciso_privileges = CISO_Privilege.objects.filter(user=user)
+                if ciso_privileges.exists():
+                    ciso_add_user = ciso_privileges.filter(ciso_add_user = True).exists()
+                    ciso_view_user = ciso_privileges.filter(ciso_view_user = True).exists()
+                    ciso_edit_user = ciso_privileges.filter(ciso_edit_user = True).exists()
+                    ciso_delete_user = ciso_privileges.filter(ciso_delete_user = True).exists()
+
+                    ciso_privilege_update = ciso_privileges.filter(ciso_privilege_update=True).exists()
+                    ciso_report_download = ciso_privileges.filter(ciso_report_download=True).exists()
+                    ciso_view_employee = ciso_privileges.filter(ciso_view_employee = True).exists()
+                    ciso_view_location = ciso_privileges.filter(ciso_view_location = True).exists()
+                    ciso_view_category = ciso_privileges.filter(ciso_view_category = True).exists()
+                    ciso_view_department = ciso_privileges.filter(ciso_view_department = True).exists()
+                #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")  
+
+    elif user_role == 'head':      # Check if the logged-in user is an head
+        username = request.session.get('username',None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                #print(f"User found: {user}")  # Debugging statement
+                head_privileges = Head_Privilege.objects.filter(user=user)
+                if head_privileges.exists():
+                    head_add_user = head_privileges.filter(head_add_user = True).exists()
+                    head_view_user = head_privileges.filter(head_view_user = True).exists()
+                    head_edit_user = head_privileges.filter(head_edit_user = True).exists()
+                    head_delete_user = head_privileges.filter(head_delete_user = True).exists()
+
+                    head_privilege_update = head_privileges.filter(head_privilege_update=True).exists()
+                    head_report_download = head_privileges.filter(head_report_download=True).exists()
+                    head_view_employee = head_privileges.filter(head_view_employee = True).exists()
+                    head_view_location = head_privileges.filter(head_view_location = True).exists()
+                    head_view_category = head_privileges.filter(head_view_category = True).exists()
+                    head_view_department = head_privileges.filter(head_view_department = True).exists()
+                #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")                        
+
+    return render(request,'asset_mng/user.html',{'users':users,'departments': departments,'locations':locations, 'user_role': user_role,
+                                                 'name':name, 'view_user':view_user, 'add_user' : add_user, 'edit_user' : edit_user, 'delete_user': delete_user,
+                                                 'privilege_update':privilege_update,
+                                                 'report_download':report_download, 'view_employee': view_employee,'view_location':view_location,'view_category':view_category,'view_department':view_department,
+
+                                                 'ciso_add_user':ciso_add_user,'ciso_view_user':ciso_view_user,'ciso_edit_user':ciso_edit_user,'ciso_delete_user':ciso_delete_user,
+                                                 'ciso_privilege_update':ciso_privilege_update,'ciso_report_download':ciso_report_download,
+                                                 'ciso_view_employee':ciso_view_employee,'ciso_view_location':ciso_view_location,'ciso_view_category':ciso_view_category,'ciso_view_department':ciso_view_department,
+                                                 
+                                                 'head_add_user':head_add_user,'head_view_user':head_view_user,'head_edit_user':head_edit_user,'head_delete_user':head_delete_user,
+                                                 'head_privilege_update':head_privilege_update,'head_report_download':head_report_download,
+                                                 'head_view_employee':head_view_employee,'head_view_location':head_view_location,'head_view_category':head_view_category,'head_view_department':head_view_department,
+                                                 })
 
 def save_user(request):
 
@@ -119,6 +369,13 @@ def save_user(request):
         users = UserDetails.objects.all().order_by('id')
         for index, use in enumerate (users,start=1):
             UserDetails.objects.filter(pk=use.pk).update(sl_num= index)
+
+            if role == 'asset_owner':                              #add user's id to respective privileges model to set permission
+                AssetOwner_Privilege.objects.create(user=new_user)
+            elif role == 'ciso':
+                CISO_Privilege.objects.create(user=new_user) 
+            elif role == 'head':
+                Head_Privilege.objects.create(user = new_user)       
 
 
         return redirect('user_list')  
@@ -160,7 +417,135 @@ def delete_user(request, user_id):
 
 def department_list(request):
     departments = Department.objects.all()
-    return render(request, 'asset_mng/department_list.html', {'departments': departments})
+    username = request.session.get('username', None)
+    user_role = request.session.get('role',None)
+    name = request.session.get('name',None)
+    view_department = False
+    add_department = False
+    edit_department = False
+    delete_department = False
+    privilege_update = False
+    report_download = False
+
+    view_user = False
+    view_location = False
+    view_category = False
+    view_employee = False
+
+    ciso_add_department = False
+    ciso_view_department = False
+    ciso_edit_department = False
+    ciso_delete_department = False
+    ciso_privilege_update = False
+    ciso_report_download = False
+
+    ciso_view_user = False
+    ciso_view_location = False
+    ciso_view_category = False
+    ciso_view_employee = False
+
+    head_view_department = False
+    head_add_department = False
+    head_edit_department = False
+    head_delete_department = False
+    head_privilege_update = False
+    head_report_download = False
+
+    head_view_user = False
+    head_view_location = False
+    head_view_category = False
+    head_view_employee = False
+
+    if user_role == 'asset_owner':      # Check if the logged-in user is an asset owner
+        username = request.session.get('username',None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                #print(f"User found: {user}")  # Debugging statement
+                privileges = AssetOwner_Privilege.objects.filter(user=user)
+                if privileges.exists():
+                    add_department = privileges.filter(add_department = True).exists()
+                    view_department = privileges.filter(view_department = True).exists()
+                    edit_department = privileges.filter(edit_department = True).exists()
+                    delete_department = privileges.filter(delete_department = True).exists()
+
+                    privilege_update = privileges.filter(privilege_update=True).exists()
+                    report_download = privileges.filter(report_download=True).exists()
+                    view_user = privileges.filter(view_user=True).exists()
+                    view_location = privileges.filter(view_location = True).exists()
+                    view_category = privileges.filter(view_category = True).exists()
+                    view_employee = privileges.filter(view_employee = True).exists()
+
+                #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")
+    elif user_role == 'ciso':      # Check if the logged-in user is an asset owner
+        username = request.session.get('username',None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                #print(f"User found: {user}")  # Debugging statement
+                ciso_privileges = CISO_Privilege.objects.filter(user=user)
+                if ciso_privileges.exists():
+                    ciso_add_department = ciso_privileges.filter(ciso_add_department = True).exists()
+                    ciso_view_department = ciso_privileges.filter(ciso_view_department = True).exists()
+                    ciso_edit_department = ciso_privileges.filter(ciso_edit_department = True).exists()
+                    ciso_delete_department = ciso_privileges.filter(ciso_delete_department = True).exists()
+
+                    ciso_privilege_update = ciso_privileges.filter(ciso_privilege_update=True).exists()
+                    ciso_report_download = ciso_privileges.filter(ciso_report_download=True).exists()
+                    ciso_view_user = ciso_privileges.filter(ciso_view_user=True).exists()
+                    ciso_view_location = ciso_privileges.filter(ciso_view_location = True).exists()
+                    ciso_view_category = ciso_privileges.filter(ciso_view_category = True).exists()
+                    ciso_view_employee = ciso_privileges.filter(ciso_view_employee = True).exists()
+
+                #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")      
+    elif user_role == 'head':      # Check if the logged-in user is an asset owner
+        username = request.session.get('username',None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                #print(f"User found: {user}")  # Debugging statement
+                head_privileges = Head_Privilege.objects.filter(user=user)
+                if head_privileges.exists():
+                    head_add_department = head_privileges.filter(head_add_department = True).exists()
+                    head_view_department = head_privileges.filter(head_view_department = True).exists()
+                    head_edit_department = head_privileges.filter(head_edit_department = True).exists()
+                    head_delete_department = head_privileges.filter(head_delete_department = True).exists()
+
+                    head_privilege_update = head_privileges.filter(head_privilege_update=True).exists()
+                    head_report_download = head_privileges.filter(head_report_download=True).exists()
+                    head_view_user = head_privileges.filter(head_view_user=True).exists()
+                    head_view_location = head_privileges.filter(head_view_location = True).exists()
+                    head_view_category = head_privileges.filter(head_view_category = True).exists()
+                    head_view_employee = head_privileges.filter(head_view_employee = True).exists()
+
+                #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")                  
+
+
+    return render(request, 'asset_mng/department_list.html', {'departments': departments,  'user_role': user_role,'name': name,
+                                                       'add_department': add_department, 'view_department': view_department, 'edit_department': edit_department, 'delete_department': delete_department,
+                                                       'privilege_update': privilege_update, 'report_download': report_download,
+                                                       'view_user': view_user,'view_location':view_location, 'view_category': view_category,'view_employee':view_employee,
+                                                       
+                                                       'ciso_add_department':ciso_add_department,'ciso_view_department':ciso_view_department,'ciso_edit_department':ciso_edit_department,'ciso_delete_department':ciso_delete_department,
+                                                       'ciso_privilege_update':ciso_privilege_update,'ciso_report_download':ciso_report_download,'ciso_view_user':ciso_view_user,'ciso_view_location':ciso_view_location,
+                                                       'ciso_view_category':ciso_view_category,'ciso_view_employee':ciso_view_employee,
+                                                       
+                                                       'head_add_department':head_add_department,'head_view_department':head_view_department,'head_edit_department':head_edit_department,'head_delete_department':head_delete_department,
+                                                       'head_privilege_update':head_privilege_update,'head_report_download':head_report_download,
+                                                       'head_view_user':head_view_user,'head_view_location':head_view_location,'head_view_category':head_view_category,'head_view_employee':head_view_employee,
+                                                       })
 
 def edit_department(request,department_id):
     if request.method == 'POST':
@@ -217,7 +602,138 @@ def add_department(request):
 
 def location_list(request):
     users=LocTable.objects.all()
-    return render(request,'asset_mng/location_pro.html',{'users':users})
+    username = request.session.get('username', None)
+    user_role = request.session.get('role',None)
+    name = request.session.get('name',None)
+    view_location = False
+    add_location = False
+    edit_location = False
+    delete_location = False
+    privilege_update = False
+    report_download = False
+    view_user = False
+    view_employee = False
+    view_category = False
+    view_department = False
+
+    ciso_view_location = False
+    ciso_add_location = False
+    ciso_edit_location = False
+    ciso_delete_location = False
+    ciso_privilege_update = False
+    ciso_report_download = False
+    ciso_view_user = False
+    ciso_view_employee = False
+    ciso_view_category = False
+    ciso_view_department = False
+
+    head_view_location = False
+    head_add_location = False
+    head_edit_location = False
+    head_delete_location = False
+    head_privilege_update = False
+    head_report_download = False
+    head_view_user = False
+    head_view_employee = False
+    head_view_category = False
+    head_view_department = False
+
+    
+
+    if user_role == 'asset_owner':      # Check if the logged-in user is an asset owner
+        username = request.session.get('username',None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                #print(f"User found: {user}")  # Debugging statement
+                privileges = AssetOwner_Privilege.objects.filter(user=user)
+                if privileges.exists():
+                    add_location = privileges.filter(add_location = True).exists()
+                    view_location = privileges.filter(view_location = True).exists()
+                    edit_location = privileges.filter(edit_location = True).exists()
+                    delete_location = privileges.filter(delete_location = True).exists()
+
+                    privilege_update = privileges.filter(privilege_update=True).exists()
+                    report_download = privileges.filter(report_download=True).exists()
+                    view_user = privileges.filter(view_user=True).exists()
+                    view_employee = privileges.filter(view_employee = True).exists()
+                    view_category = privileges.filter(view_category = True).exists()
+                    view_department = privileges.filter(view_department = True).exists()
+
+
+
+                #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")
+    elif user_role == 'ciso':      # Check if the logged-in user is an ciso
+        username = request.session.get('username',None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                #print(f"User found: {user}")  # Debugging statement
+                ciso_privileges = CISO_Privilege.objects.filter(user=user)
+                if ciso_privileges.exists():
+                    ciso_add_location = ciso_privileges.filter(ciso_add_location = True).exists()
+                    ciso_view_location = ciso_privileges.filter(ciso_view_location = True).exists()
+                    ciso_edit_location = ciso_privileges.filter(ciso_edit_location = True).exists()
+                    ciso_delete_location = ciso_privileges.filter(ciso_delete_location = True).exists()
+
+                    ciso_privilege_update = ciso_privileges.filter(ciso_privilege_update=True).exists()
+                    ciso_report_download = ciso_privileges.filter(ciso_report_download=True).exists()
+                    ciso_view_user = ciso_privileges.filter(ciso_view_user=True).exists()
+                    ciso_view_employee = ciso_privileges.filter(ciso_view_employee = True).exists()
+                    ciso_view_category = ciso_privileges.filter(ciso_view_category = True).exists()
+                    ciso_view_department = ciso_privileges.filter(ciso_view_department = True).exists()
+
+                #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")  
+
+    elif user_role == 'head':      # Check if the logged-in user is an asset owner
+        username = request.session.get('username',None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                #print(f"User found: {user}")  # Debugging statement
+                head_privileges = Head_Privilege.objects.filter(user=user)
+                if head_privileges.exists():
+                    head_add_location = head_privileges.filter(head_add_location = True).exists()
+                    head_view_location = head_privileges.filter(head_view_location = True).exists()
+                    head_edit_location = head_privileges.filter(head_edit_location = True).exists()
+                    head_delete_location = head_privileges.filter(head_delete_location = True).exists()
+
+                    head_privilege_update = head_privileges.filter(head_privilege_update=True).exists()
+                    head_report_download = head_privileges.filter(head_report_download=True).exists()
+                    head_view_user = head_privileges.filter(head_view_user=True).exists()
+                    head_view_employee = head_privileges.filter(head_view_employee = True).exists()
+                    head_view_category = head_privileges.filter(head_view_category = True).exists()
+                    head_view_department = head_privileges.filter(head_view_department = True).exists()
+
+
+
+                #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")                      
+
+    return render(request,'asset_mng/location_pro.html',{'users':users, 'user_role': user_role,'name': name,
+                                                       'add_location': add_location, 'view_location': view_location, 'edit_location': edit_location, 'delete_location': delete_location,
+                                                       'privilege_update': privilege_update, 'report_download': report_download,
+                                                       'view_user': view_user,'view_employee':view_employee,'view_category':view_category,'view_department':view_department,
+
+                                                       'ciso_add_location':ciso_add_location,'ciso_view_location':ciso_view_location,'ciso_edit_location':ciso_edit_location,'ciso_delete_location':ciso_delete_location,
+                                                       'ciso_privilege_update':ciso_privilege_update,'ciso_report_download':ciso_report_download,
+                                                       'ciso_view_user':ciso_view_user,'ciso_view_employee':ciso_view_employee,'ciso_view_category':ciso_view_category,'ciso_view_department':ciso_view_department,
+                                                       
+                                                       'head_add_location':head_add_location,'head_view_location':head_view_location,'head_edit_location':head_edit_location,'head_delete_location':head_delete_location,
+                                                       'head_privilege_update':head_privilege_update,'head_report_download':head_report_download,
+                                                       'head_view_user':head_view_user,'head_view_employee':head_view_employee,'head_view_category':head_view_category,'head_view_department':head_view_department,
+                                                       })
 
 
 def add_location(request):
@@ -278,7 +794,134 @@ def edit_location(request,location_id):
 
 def category_list(request):
     categories = Category.objects.all()
-    return render(request, 'asset_mng/category.html', {'categories': categories})
+    username = request.session.get('username', None)
+    user_role = request.session.get('role',None)
+    name = request.session.get('name',None)
+    view_category = False
+    add_category = False
+    edit_category = False
+    delete_category = False
+    privilege_update = False
+    report_download = False
+    view_user = False
+    view_location = False
+    view_employee = False
+    view_department = False
+
+    ciso_view_category = False
+    ciso_add_category = False
+    ciso_edit_category = False
+    ciso_delete_category = False
+    ciso_privilege_update = False
+    ciso_report_download = False
+    ciso_view_user = False
+    ciso_view_location = False
+    ciso_view_employee = False
+    ciso_view_department = False
+
+    head_view_category = False
+    head_add_category = False
+    head_edit_category = False
+    head_delete_category = False
+    head_privilege_update = False
+    head_report_download = False
+    head_view_user = False
+    head_view_location = False
+    head_view_employee = False
+    head_view_department = False
+
+
+
+    if user_role == 'asset_owner':      # Check if the logged-in user is an asset owner
+        username = request.session.get('username',None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                #print(f"User found: {user}")  # Debugging statement
+                privileges = AssetOwner_Privilege.objects.filter(user=user)
+                if privileges.exists():
+                    add_category = privileges.filter(add_category = True).exists()
+                    view_category = privileges.filter(view_category = True).exists()
+                    edit_category = privileges.filter(edit_category = True).exists()
+                    delete_category = privileges.filter(delete_category = True).exists()
+
+                    privilege_update = privileges.filter(privilege_update=True).exists()
+                    report_download = privileges.filter(report_download=True).exists()
+                    view_user = privileges.filter(view_user=True).exists()
+                    view_location = privileges.filter(view_location = True).exists()
+                    view_employee = privileges.filter(view_employee = True).exists()
+                    view_department = privileges.filter(view_department = True).exists()
+
+                #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")
+
+    elif user_role == 'ciso':      # Check if the logged-in user is an asset owner
+        username = request.session.get('username',None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                #print(f"User found: {user}")  # Debugging statement
+                ciso_privileges = CISO_Privilege.objects.filter(user=user)
+                if ciso_privileges.exists():
+                    ciso_add_category = ciso_privileges.filter(ciso_add_category = True).exists()
+                    ciso_view_category = ciso_privileges.filter(ciso_view_category = True).exists()
+                    ciso_edit_category = ciso_privileges.filter(ciso_edit_category = True).exists()
+                    ciso_delete_category = ciso_privileges.filter(ciso_delete_category = True).exists()
+
+                    ciso_privilege_update = ciso_privileges.filter(ciso_privilege_update=True).exists()
+                    ciso_report_download = ciso_privileges.filter(ciso_report_download=True).exists()
+                    ciso_view_user = ciso_privileges.filter(ciso_view_user=True).exists()
+                    ciso_view_location = ciso_privileges.filter(ciso_view_location = True).exists()
+                    ciso_view_employee = ciso_privileges.filter(ciso_view_employee = True).exists()
+                    ciso_view_department = ciso_privileges.filter(ciso_view_department = True).exists()
+
+                #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")       
+
+    elif user_role == 'head':      # Check if the logged-in user is an asset owner
+        username = request.session.get('username',None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                #print(f"User found: {user}")  # Debugging statement
+                head_privileges = Head_Privilege.objects.filter(user=user)
+                if head_privileges.exists():
+                    head_add_category = head_privileges.filter(head_add_category = True).exists()
+                    head_view_category = head_privileges.filter(head_view_category = True).exists()
+                    head_edit_category = head_privileges.filter(head_edit_category = True).exists()
+                    head_delete_category = head_privileges.filter(head_delete_category = True).exists()
+
+                    head_privilege_update = head_privileges.filter(head_privilege_update=True).exists()
+                    head_report_download = head_privileges.filter(head_report_download=True).exists()
+                    head_view_user = head_privileges.filter(head_view_user=True).exists()
+                    head_view_location = head_privileges.filter(head_view_location = True).exists()
+                    head_view_employee = head_privileges.filter(head_view_employee = True).exists()
+                    head_view_department = head_privileges.filter(head_view_department = True).exists()
+
+                #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")                 
+
+    return render(request, 'asset_mng/category.html', {'categories': categories, 'user_role': user_role,'name': name,
+                                                       'add_category': add_category, 'view_category': view_category, 'edit_category': edit_category, 'delete_category': delete_category,
+                                                       'privilege_update': privilege_update, 'report_download': report_download,
+                                                       'view_user': view_user,'view_location':view_location,'view_employee': view_employee,'view_department':view_department,
+
+                                                       'ciso_add_category':ciso_add_category,'ciso_view_category':ciso_view_category,'ciso_edit_category':ciso_edit_category,'ciso_delete_category':ciso_delete_category,
+                                                       'ciso_privilege_update':ciso_privilege_update,'ciso_report_download':ciso_report_download,'ciso_view_user':ciso_view_user,'ciso_view_location':ciso_view_location,'ciso_view_employee':ciso_view_employee,'ciso_view_department':ciso_view_department,
+                                                       
+                                                       'head_add_category':head_add_category,'head_view_category':head_view_category,'head_edit_category':head_edit_category,'head_delete_category':head_delete_category,
+                                                       'head_privilege_update':head_privilege_update,'head_report_download':head_report_download,
+                                                       'head_view_user':head_view_user,'head_view_location':head_view_location,'head_view_employee':head_view_employee,'head_view_department':head_view_department,
+                                                       })
 
 
 def save_category(request):
@@ -331,7 +974,134 @@ def edit_category(request,category_id):
 
 def employee(request):
     employees = Employee.objects.all()
-    return render(request, 'asset_mng/employee.html', {'employees': employees})
+    username = request.session.get('username', None)
+    user_role = request.session.get('role',None)
+    name = request.session.get('name',None)
+    view_employee = False
+    add_employee = False
+    edit_employee = False
+    delete_employee = False
+    privilege_update = False
+    report_download = False
+    view_user = False
+    view_location = False
+    view_category = False
+    view_department = False
+
+    ciso_view_employee = False
+    ciso_add_employee = False
+    ciso_edit_employee = False
+    ciso_delete_employee = False
+    ciso_privilege_update = False
+    ciso_report_download = False
+    ciso_view_user = False
+    ciso_view_location = False
+    ciso_view_category = False
+    ciso_view_department = False
+
+    head_view_employee = False
+    head_add_employee = False
+    head_edit_employee = False
+    head_delete_employee = False
+    head_privilege_update = False
+    head_report_download = False
+    head_view_user = False
+    head_view_location = False
+    head_view_category = False
+    head_view_department = False
+
+    if user_role == 'asset_owner':      # Check if the logged-in user is an asset owner
+        username = request.session.get('username',None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                #print(f"User found: {user}")  # Debugging statement
+                privileges = AssetOwner_Privilege.objects.filter(user=user)
+                if privileges.exists():
+                    add_employee = privileges.filter(add_employee = True).exists()
+                    view_employee = privileges.filter(view_employee = True).exists()
+                    edit_employee = privileges.filter(edit_employee = True).exists()
+                    delete_employee = privileges.filter(delete_employee = True).exists()
+
+                    privilege_update = privileges.filter(privilege_update=True).exists()
+                    report_download = privileges.filter(report_download=True).exists()
+                    view_user = privileges.filter(view_user=True).exists()
+                    view_location = privileges.filter(view_location = True).exists()
+                    view_category = privileges.filter(view_category = True).exists()
+                    view_department = privileges.filter(view_department = True).exists()
+
+                #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")
+
+    elif user_role == 'ciso':      # Check if the logged-in user is an ciso
+
+        username = request.session.get('username',None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                #print(f"User found: {user}")  # Debugging statement
+                ciso_privileges = CISO_Privilege.objects.filter(user=user)
+                if ciso_privileges.exists():
+                    ciso_add_employee = ciso_privileges.filter(ciso_add_employee = True).exists()
+                    ciso_view_employee = ciso_privileges.filter(ciso_view_employee = True).exists()
+                    ciso_edit_employee = ciso_privileges.filter(ciso_edit_employee = True).exists()
+                    ciso_delete_employee = ciso_privileges.filter(ciso_delete_employee = True).exists()
+
+                    ciso_privilege_update = ciso_privileges.filter(ciso_privilege_update=True).exists()
+                    ciso_report_download = ciso_privileges.filter(ciso_report_download=True).exists()
+                    ciso_view_user = ciso_privileges.filter(ciso_view_user=True).exists()
+                    ciso_view_location = ciso_privileges.filter(ciso_view_location = True).exists()
+                    ciso_view_category = ciso_privileges.filter(ciso_view_category = True).exists()
+                    ciso_view_department = ciso_privileges.filter(ciso_view_department = True).exists()    
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")   
+    elif user_role == 'head':      # Check if the logged-in user is an asset owner
+        username = request.session.get('username',None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                #print(f"User found: {user}")  # Debugging statement
+                head_privileges = Head_Privilege.objects.filter(user=user)
+                if head_privileges.exists():
+                    head_add_employee = head_privileges.filter(head_add_employee = True).exists()
+                    head_view_employee = head_privileges.filter(head_view_employee = True).exists()
+                    head_edit_employee = head_privileges.filter(head_edit_employee = True).exists()
+                    head_delete_employee = head_privileges.filter(head_delete_employee = True).exists()
+
+                    head_privilege_update = head_privileges.filter(head_privilege_update=True).exists()
+                    head_report_download = head_privileges.filter(head_report_download=True).exists()
+                    head_view_user = head_privileges.filter(head_view_user=True).exists()
+                    head_view_location = head_privileges.filter(head_view_location = True).exists()
+                    head_view_category = head_privileges.filter(head_view_category = True).exists()
+                    head_view_department = head_privileges.filter(head_view_department = True).exists()
+
+                #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")
+                                     
+
+    return render(request, 'asset_mng/employee.html', {'employees': employees, 'user_role': user_role,'name': name,
+                                                       'add_employee': add_employee, 'view_employee': view_employee, 'edit_employee': edit_employee, 'delete_employee': delete_employee,
+                                                       'privilege_update': privilege_update, 'report_download': report_download,
+                                                       'view_user': view_user,'view_location':view_location, 'view_category': view_category, 'view_department':view_department,
+
+                                                        'ciso_add_employee':ciso_add_employee,'ciso_view_employee':ciso_view_employee,'ciso_edit_employee':ciso_edit_employee,
+                                                       'ciso_delete_employee':ciso_delete_employee,'ciso_privilege_update':ciso_privilege_update,
+                                                       'ciso_report_download':ciso_report_download,'ciso_view_user':ciso_view_user,'ciso_view_location':ciso_view_location,
+                                                       'ciso_view_category':ciso_view_category,'ciso_view_department':ciso_view_department,
+                                                       
+                                                       'head_add_employee':head_add_employee,'head_view_employee':head_view_employee,'head_edit_employee':head_edit_employee,'head_delete_employee':head_delete_employee,
+                                                       'head_privilege_update':head_privilege_update,'head_report_download':head_report_download,
+                                                       'head_view_user':head_view_user,'head_view_location':head_view_location,'head_view_category':head_view_category,'head_view_department':head_view_department,
+
+                                                       })
 
 def delete_employee(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
@@ -399,18 +1169,118 @@ def add_employee(request):
     return render(request, 'asset_mng/employee_list.html')  # Adjust the template name as necessary
 
 
+
 def reports_view(request):
+    name = request.session.get('name', None)
+    user_role = request.session.get('role', None)
+    
+    # Default value for report_download privilege
+    report_download = False
+    privilege_update = False
+    view_user = False
+    view_employee = False
+    view_location = False
+    view_category = False
+    view_department = False
+
+    ciso_report_download = False
+    ciso_privilege_update = False
+    ciso_view_user = False
+    ciso_view_employee = False
+    ciso_view_location = False
+    ciso_view_category = False
+    ciso_view_department = False
+
+    head_report_download = False
+    head_privilege_update = False
+    head_view_user = False
+    head_view_employee = False
+    head_view_location = False
+    head_view_category = False
+    head_view_department = False
+
+
+    if user_role == 'asset_owner':  # Check if the logged-in user is an asset owner
+        username = request.session.get('username', None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                privileges = AssetOwner_Privilege.objects.filter(user=user)
+                if privileges.exists():
+                    report_download = privileges.filter(report_download=True).exists()
+                    privilege_update = privileges.filter(privilege_update=True).exists()
+                    view_user = privileges.filter(view_user=True).exists()
+                    view_employee = privileges.filter(view_employee=True).exists()
+                    view_location = privileges.filter(view_location = True).exists()
+                    view_category = privileges.filter(view_category = True).exists()
+                    view_department = privileges.filter(view_department = True).exists()
+
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")
+    elif user_role == 'ciso':  # Check if the logged-in user is an asset owner
+        username = request.session.get('username', None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                ciso_privileges = CISO_Privilege.objects.filter(user=user)
+                if ciso_privileges.exists():
+                    ciso_report_download = ciso_privileges.filter(ciso_report_download=True).exists()
+                    ciso_privilege_update = ciso_privileges.filter(ciso_privilege_update=True).exists()
+                    ciso_view_user = ciso_privileges.filter(ciso_view_user=True).exists()
+                    ciso_view_employee = ciso_privileges.filter(ciso_view_employee=True).exists()
+                    ciso_view_location = ciso_privileges.filter(ciso_view_location = True).exists()
+                    ciso_view_category = ciso_privileges.filter(ciso_view_category = True).exists()
+                    ciso_view_department = ciso_privileges.filter(ciso_view_department = True).exists()
+
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")  
+
+    elif user_role == 'head':  # Check if the logged-in user is an asset owner
+        username = request.session.get('username', None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                head_privileges = Head_Privilege.objects.filter(user=user)
+                if head_privileges.exists():
+                    head_report_download = head_privileges.filter(head_report_download=True).exists()
+                    head_privilege_update = head_privileges.filter(head_privilege_update=True).exists()
+                    head_view_user = head_privileges.filter(head_view_user=True).exists()
+                    head_view_employee = head_privileges.filter(head_view_employee=True).exists()
+                    head_view_location = head_privileges.filter(head_view_location = True).exists()
+                    head_view_category = head_privileges.filter(head_view_category = True).exists()
+                    head_view_department = head_privileges.filter(head_view_department = True).exists()
+
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")                      
+
     context = {
-        'tables': ['UserTable', 'Department'],
+        'tables': ['UserDetails', 'Department'],
         'data': None,
         'selected_table': None,
+        'user_role': user_role,
+        'name': name,
+        'report_download': report_download,
+        'privilege_update': privilege_update,'view_user':view_user, 'view_employee':view_employee,'view_location':view_location,'view_category':view_category,'view_department':view_department,
+
+        'ciso_report_download':ciso_report_download,'ciso_privilege_update':ciso_privilege_update,
+        'ciso_view_user':ciso_view_user,'ciso_view_employee':ciso_view_employee,'ciso_view_location':ciso_view_location,'ciso_view_category':ciso_view_category,'ciso_view_department':ciso_view_department,
+
+        'head_report_download':head_report_download,'head_privilege_update':head_privilege_update,
+        'head_view_user':head_view_user,'head_view_employee':head_view_employee,'head_view_location':head_view_location,'head_view_category':head_view_category,'head_view_department':head_view_department,
+
     }
     
     if request.method == 'POST':
         selected_table = request.POST.get('table')
         if selected_table == 'UserDetails':
             context['data'] = UserDetails.objects.all()
-            context['selected_table'] = 'UserTable'
+            context['selected_table'] = 'UserDetails'
         elif selected_table == 'Department':
             context['data'] = Department.objects.all()
             context['selected_table'] = 'Department'
@@ -465,38 +1335,426 @@ def privilege_head(request):
 @csrf_exempt
 def privilege_asset_owner(request):
     username = request.session.get('username', None)
+    user_role = request.session.get('role',None)
+    name = request.session.get('name',None)
     if not username:
         return redirect('asset_login')
     
     user = UserDetails.objects.get(username=username)
     
     if request.method == 'POST':
+        privilege_update = request.POST.get('privilege_update') == 'on'
+        report_download = request.POST.get('report_download') == 'on'
         add_asset = request.POST.get('add_asset') == 'on'
         view_asset = request.POST.get('view_asset') == 'on'
         edit_asset = request.POST.get('edit_asset') == 'on'
         delete_asset = request.POST.get('delete_asset') == 'on'
-        AssetOwner_Privilege.objects.all().update(add_asset=add_asset, view_asset = view_asset, edit_asset = edit_asset, delete_asset = delete_asset)
+
+        view_user = request.POST.get('view_user') == 'on'
+        add_user = request.POST.get('add_user') == 'on'
+        edit_user = request.POST.get('edit_user') == 'on'
+        delete_user = request.POST.get('delete_user') == 'on'
+
+        view_employee = request.POST.get('view_employee') == 'on'
+        add_employee = request.POST.get('add_employee') == 'on'
+        edit_employee = request.POST.get('edit_employee') == 'on'
+        delete_employee = request.POST.get('delete_employee') == 'on'
+
+        view_location = request.POST.get('view_location') == 'on'
+        add_location = request.POST.get('add_location') == 'on'
+        edit_location = request.POST.get('edit_location') == 'on'
+        delete_location = request.POST.get('delete_location') == 'on'
+
+        view_department = request.POST.get('view_department') == 'on'
+        add_department = request.POST.get('add_department') == 'on'
+        edit_department = request.POST.get('edit_department') == 'on'
+        delete_department= request.POST.get('delete_department') == 'on'
+
+        view_category = request.POST.get('view_category') == 'on'
+        add_category = request.POST.get('add_category') == 'on'
+        edit_category = request.POST.get('edit_category') == 'on'
+        delete_category= request.POST.get('delete_category') == 'on'
+
+        AssetOwner_Privilege.objects.all().update(add_asset=add_asset, view_asset = view_asset, edit_asset = edit_asset, delete_asset = delete_asset, 
+                                                  report_download = report_download, privilege_update = privilege_update, 
+                                                  view_user = view_user, add_user = add_user, edit_user = edit_user, delete_user = delete_user,
+                                                  view_employee = view_employee, add_employee = add_employee, edit_employee = edit_employee, delete_employee = delete_employee,
+                                                  view_location=view_location,add_location=add_location,edit_location=edit_location,delete_location=delete_location,
+                                                  view_department = view_department, add_department = add_department, edit_department = edit_department, delete_department = delete_department,
+                                                  view_category=view_category,add_category=add_category,edit_category=edit_category,delete_category=delete_category,)
         return redirect('privilege_asset_owner')
     
     # Check if any asset owner has add_asset set to True to set the checkbox state
+    any_privilege_update = AssetOwner_Privilege.objects.filter(privilege_update=True).exists()
+    any_report_download = AssetOwner_Privilege.objects.filter(report_download=True).exists()
     any_add_asset = AssetOwner_Privilege.objects.filter(add_asset=True).exists()
     any_view_asset = AssetOwner_Privilege.objects.filter(view_asset = True).exists()
     any_edit_asset = AssetOwner_Privilege.objects.filter(edit_asset = True).exists()
     any_delete_asset = AssetOwner_Privilege.objects.filter(delete_asset=True).exists()
 
+    any_view_user = AssetOwner_Privilege.objects.filter(view_user = True).exists()
+    any_add_user = AssetOwner_Privilege.objects.filter(add_user = True).exists()
+    any_edit_user = AssetOwner_Privilege.objects.filter(edit_user = True).exists()
+    any_delete_user = AssetOwner_Privilege.objects.filter(delete_user = True).exists()
+
+    any_view_employee = AssetOwner_Privilege.objects.filter(view_employee = True).exists()
+    any_add_employee = AssetOwner_Privilege.objects.filter(add_employee = True).exists()
+    any_edit_employee = AssetOwner_Privilege.objects.filter(edit_employee = True).exists()
+    any_delete_employee = AssetOwner_Privilege.objects.filter(delete_employee = True).exists()
+
+    any_view_location = AssetOwner_Privilege.objects.filter(view_location = True).exists()
+    any_add_location= AssetOwner_Privilege.objects.filter(add_location= True).exists()
+    any_edit_location= AssetOwner_Privilege.objects.filter(edit_location= True).exists()
+    any_delete_location = AssetOwner_Privilege.objects.filter(delete_location = True).exists()
+
+    any_view_department = AssetOwner_Privilege.objects.filter(view_department = True).exists()
+    any_add_department= AssetOwner_Privilege.objects.filter(add_department= True).exists()
+    any_edit_department= AssetOwner_Privilege.objects.filter(edit_department= True).exists()
+    any_delete_department= AssetOwner_Privilege.objects.filter(delete_department = True).exists()
+
+    any_view_category = AssetOwner_Privilege.objects.filter(view_category = True).exists()
+    any_add_category= AssetOwner_Privilege.objects.filter(add_category= True).exists()
+    any_edit_category= AssetOwner_Privilege.objects.filter(edit_category= True).exists()
+    any_delete_category= AssetOwner_Privilege.objects.filter(delete_category = True).exists()
+
+
+
     return render(request, 'asset_mng/privilege_asset_owner.html', {
+        'user_role': user_role,
         'username': username,
+        'name': name,
+        'privilege_update' : any_privilege_update,
+        'report_download' : any_report_download,
+
         'add_asset': any_add_asset,
         'view_asset': any_view_asset,
         'edit_asset': any_edit_asset,
-        'delete_asset': any_delete_asset
+        'delete_asset': any_delete_asset,
+
+        'view_user' : any_view_user,
+        'add_user' : any_add_user,
+        'edit_user': any_edit_user,
+        'delete_user': any_delete_user,
+
+        'view_employee' : any_view_employee,
+        'add_employee' : any_add_employee,
+        'edit_employee' : any_edit_employee,
+        'delete_employee' : any_delete_employee,
+
+        'view_department' : any_view_department,
+        'add_department' : any_add_department,
+        'edit_department': any_edit_department,
+        'delete_department': any_delete_department,
+
+        'view_location' : any_view_location,
+        'add_location' : any_add_location,
+        'edit_location': any_edit_location,
+        'delete_location': any_delete_location,
+
+        'view_category' : any_view_category,
+        'add_category' : any_add_category,
+        'edit_category': any_edit_category,
+        'delete_category': any_delete_category,
+
     })
 
+@csrf_exempt
+def privilege_ciso(request):
+    username = request.session.get('username', None)
+    user_role = request.session.get('role',None)
+    name = request.session.get('name',None)
+    if not username:
+        return redirect('asset_login')
+    
+    user = UserDetails.objects.get(username=username)
+    
+    if request.method == 'POST':
+        ciso_privilege_update = request.POST.get('ciso_privilege_update') == 'on'
+        ciso_report_download = request.POST.get('ciso_report_download') == 'on'
+        ciso_add_asset = request.POST.get('ciso_add_asset') == 'on'
+        ciso_view_asset = request.POST.get('ciso_view_asset') == 'on'
+        ciso_edit_asset = request.POST.get('ciso_edit_asset') == 'on'
+        ciso_delete_asset = request.POST.get('ciso_delete_asset') == 'on'
+
+        ciso_view_user = request.POST.get('ciso_view_user') == 'on'
+        ciso_add_user = request.POST.get('ciso_add_user') == 'on'
+        ciso_edit_user = request.POST.get('ciso_edit_user') == 'on'
+        ciso_delete_user = request.POST.get('ciso_delete_user') == 'on'
+
+        ciso_view_employee = request.POST.get('ciso_view_employee') == 'on'
+        ciso_add_employee = request.POST.get('ciso_add_employee') == 'on'
+        ciso_edit_employee = request.POST.get('ciso_edit_employee') == 'on'
+        ciso_delete_employee = request.POST.get('ciso_delete_employee') == 'on'
+
+        ciso_view_location = request.POST.get('ciso_view_location') == 'on'
+        ciso_add_location = request.POST.get('ciso_add_location') == 'on'
+        ciso_edit_location = request.POST.get('ciso_edit_location') == 'on'
+        ciso_delete_location = request.POST.get('ciso_delete_location') == 'on'
+
+        ciso_view_department = request.POST.get('ciso_view_department') == 'on'
+        ciso_add_department = request.POST.get('ciso_add_department') == 'on'
+        ciso_edit_department = request.POST.get('ciso_edit_department') == 'on'
+        ciso_delete_department= request.POST.get('ciso_delete_department') == 'on'
+
+        ciso_view_category = request.POST.get('ciso_view_category') == 'on'
+        ciso_add_category = request.POST.get('ciso_add_category') == 'on'
+        ciso_edit_category = request.POST.get('ciso_edit_category') == 'on'
+        ciso_delete_category = request.POST.get('ciso_delete_category') == 'on'
+
+        CISO_Privilege.objects.all().update(
+            ciso_add_asset=ciso_add_asset, ciso_view_asset=ciso_view_asset, ciso_edit_asset=ciso_edit_asset, ciso_delete_asset=ciso_delete_asset, 
+            ciso_report_download=ciso_report_download, ciso_privilege_update=ciso_privilege_update, 
+            ciso_view_user=ciso_view_user, ciso_add_user=ciso_add_user, ciso_edit_user=ciso_edit_user, ciso_delete_user=ciso_delete_user,
+            ciso_view_employee=ciso_view_employee, ciso_add_employee=ciso_add_employee, ciso_edit_employee=ciso_edit_employee, ciso_delete_employee=ciso_delete_employee,
+            ciso_view_location=ciso_view_location, ciso_add_location=ciso_add_location, ciso_edit_location=ciso_edit_location, ciso_delete_location=ciso_delete_location,
+            ciso_view_department=ciso_view_department, ciso_add_department=ciso_add_department, ciso_edit_department=ciso_edit_department, ciso_delete_department=ciso_delete_department,
+            ciso_view_category=ciso_view_category, ciso_add_category=ciso_add_category, ciso_edit_category=ciso_edit_category, ciso_delete_category=ciso_delete_category
+        )
+        return redirect('privilege_ciso')
+    
+    # Check if any asset owner has ciso_add_asset set to True to set the checkbox state
+    any_ciso_privilege_update = CISO_Privilege.objects.filter(ciso_privilege_update=True).exists()
+    any_ciso_report_download = CISO_Privilege.objects.filter(ciso_report_download=True).exists()
+    any_ciso_add_asset = CISO_Privilege.objects.filter(ciso_add_asset=True).exists()
+    any_ciso_view_asset = CISO_Privilege.objects.filter(ciso_view_asset=True).exists()
+    any_ciso_edit_asset = CISO_Privilege.objects.filter(ciso_edit_asset=True).exists()
+    any_ciso_delete_asset = CISO_Privilege.objects.filter(ciso_delete_asset=True).exists()
+
+    any_ciso_view_user = CISO_Privilege.objects.filter(ciso_view_user=True).exists()
+    any_ciso_add_user = CISO_Privilege.objects.filter(ciso_add_user=True).exists()
+    any_ciso_edit_user = CISO_Privilege.objects.filter(ciso_edit_user=True).exists()
+    any_ciso_delete_user = CISO_Privilege.objects.filter(ciso_delete_user=True).exists()
+
+    any_ciso_view_employee = CISO_Privilege.objects.filter(ciso_view_employee=True).exists()
+    any_ciso_add_employee = CISO_Privilege.objects.filter(ciso_add_employee=True).exists()
+    any_ciso_edit_employee = CISO_Privilege.objects.filter(ciso_edit_employee=True).exists()
+    any_ciso_delete_employee = CISO_Privilege.objects.filter(ciso_delete_employee=True).exists()
+
+    any_ciso_view_location = CISO_Privilege.objects.filter(ciso_view_location=True).exists()
+    any_ciso_add_location = CISO_Privilege.objects.filter(ciso_add_location=True).exists()
+    any_ciso_edit_location = CISO_Privilege.objects.filter(ciso_edit_location=True).exists()
+    any_ciso_delete_location = CISO_Privilege.objects.filter(ciso_delete_location=True).exists()
+
+    any_ciso_view_department = CISO_Privilege.objects.filter(ciso_view_department=True).exists()
+    any_ciso_add_department = CISO_Privilege.objects.filter(ciso_add_department=True).exists()
+    any_ciso_edit_department = CISO_Privilege.objects.filter(ciso_edit_department=True).exists()
+    any_ciso_delete_department = CISO_Privilege.objects.filter(ciso_delete_department=True).exists()
+
+    any_ciso_view_category = CISO_Privilege.objects.filter(ciso_view_category=True).exists()
+    any_ciso_add_category = CISO_Privilege.objects.filter(ciso_add_category=True).exists()
+    any_ciso_edit_category = CISO_Privilege.objects.filter(ciso_edit_category=True).exists()
+    any_ciso_delete_category = CISO_Privilege.objects.filter(ciso_delete_category=True).exists()
+
+    return render(request, 'asset_mng/privilege_ciso.html', {
+        'user_role': user_role,
+        'username': username,
+        'name': name,
+        'ciso_privilege_update': any_ciso_privilege_update,
+        'ciso_report_download': any_ciso_report_download,
+
+        'ciso_add_asset': any_ciso_add_asset,
+        'ciso_view_asset': any_ciso_view_asset,
+        'ciso_edit_asset': any_ciso_edit_asset,
+        'ciso_delete_asset': any_ciso_delete_asset,
+
+        'ciso_view_user': any_ciso_view_user,
+        'ciso_add_user': any_ciso_add_user,
+        'ciso_edit_user': any_ciso_edit_user,
+        'ciso_delete_user': any_ciso_delete_user,
+
+        'ciso_view_employee': any_ciso_view_employee,
+        'ciso_add_employee': any_ciso_add_employee,
+        'ciso_edit_employee': any_ciso_edit_employee,
+        'ciso_delete_employee': any_ciso_delete_employee,
+
+        'ciso_view_department': any_ciso_view_department,
+        'ciso_add_department': any_ciso_add_department,
+        'ciso_edit_department': any_ciso_edit_department,
+        'ciso_delete_department': any_ciso_delete_department,
+
+        'ciso_view_location': any_ciso_view_location,
+        'ciso_add_location': any_ciso_add_location,
+        'ciso_edit_location': any_ciso_edit_location,
+        'ciso_delete_location': any_ciso_delete_location,
+
+        'ciso_view_category': any_ciso_view_category,
+        'ciso_add_category': any_ciso_add_category,
+        'ciso_edit_category': any_ciso_edit_category,
+        'ciso_delete_category': any_ciso_delete_category,
+    })
+
+@csrf_exempt
+def privilege_head(request):
+    username = request.session.get('username', None)
+    user_role = request.session.get('role',None)
+    name = request.session.get('name',None)
+    if not username:
+        return redirect('asset_login')
+    
+    user = UserDetails.objects.get(username=username)
+    
+    if request.method == 'POST':
+        head_privilege_update = request.POST.get('head_privilege_update') == 'on'
+        head_report_download = request.POST.get('head_report_download') == 'on'
+        head_add_asset = request.POST.get('head_add_asset') == 'on'
+        head_view_asset = request.POST.get('head_view_asset') == 'on'
+        head_edit_asset = request.POST.get('head_edit_asset') == 'on'
+        head_delete_asset = request.POST.get('head_delete_asset') == 'on'
+
+        head_view_user = request.POST.get('head_view_user') == 'on'
+        head_add_user = request.POST.get('head_add_user') == 'on'
+        head_edit_user = request.POST.get('head_edit_user') == 'on'
+        head_delete_user = request.POST.get('head_delete_user') == 'on'
+
+        head_view_employee = request.POST.get('head_view_employee') == 'on'
+        head_add_employee = request.POST.get('head_add_employee') == 'on'
+        head_edit_employee = request.POST.get('head_edit_employee') == 'on'
+        head_delete_employee = request.POST.get('head_delete_employee') == 'on'
+
+        head_view_location = request.POST.get('head_view_location') == 'on'
+        head_add_location = request.POST.get('head_add_location') == 'on'
+        head_edit_location = request.POST.get('head_edit_location') == 'on'
+        head_delete_location = request.POST.get('head_delete_location') == 'on'
+
+        head_view_department = request.POST.get('head_view_department') == 'on'
+        head_add_department = request.POST.get('head_add_department') == 'on'
+        head_edit_department = request.POST.get('head_edit_department') == 'on'
+        head_delete_department= request.POST.get('head_delete_department') == 'on'
+
+        head_view_category = request.POST.get('head_view_category') == 'on'
+        head_add_category = request.POST.get('head_add_category') == 'on'
+        head_edit_category = request.POST.get('head_edit_category') == 'on'
+        head_delete_category = request.POST.get('head_delete_category') == 'on'
+
+        Head_Privilege.objects.all().update(
+            head_add_asset=head_add_asset, head_view_asset=head_view_asset, head_edit_asset=head_edit_asset, head_delete_asset=head_delete_asset, 
+            head_report_download=head_report_download, head_privilege_update=head_privilege_update, 
+            head_view_user=head_view_user, head_add_user=head_add_user, head_edit_user=head_edit_user, head_delete_user=head_delete_user,
+            head_view_employee=head_view_employee, head_add_employee=head_add_employee, head_edit_employee=head_edit_employee, head_delete_employee=head_delete_employee,
+            head_view_location=head_view_location, head_add_location=head_add_location, head_edit_location=head_edit_location, head_delete_location=head_delete_location,
+            head_view_department=head_view_department, head_add_department=head_add_department, head_edit_department=head_edit_department, head_delete_department=head_delete_department,
+            head_view_category=head_view_category, head_add_category=head_add_category, head_edit_category=head_edit_category, head_delete_category=head_delete_category,
+        )
+        return redirect('privilege_head')
+    
+    # Check if any asset owner has ciso_add_asset set to True to set the checkbox state
+    any_head_privilege_update = Head_Privilege.objects.filter(head_privilege_update=True).exists()
+    any_head_report_download = Head_Privilege.objects.filter(head_report_download=True).exists()
+    any_head_add_asset = Head_Privilege.objects.filter(head_add_asset=True).exists()
+    any_head_view_asset = Head_Privilege.objects.filter(head_view_asset=True).exists()
+    any_head_edit_asset = Head_Privilege.objects.filter(head_edit_asset=True).exists()
+    any_head_delete_asset = Head_Privilege.objects.filter(head_delete_asset=True).exists()
+
+    any_head_view_user = Head_Privilege.objects.filter(head_view_user=True).exists()
+    any_head_add_user = Head_Privilege.objects.filter(head_add_user=True).exists()
+    any_head_edit_user = Head_Privilege.objects.filter(head_edit_user=True).exists()
+    any_head_delete_user = Head_Privilege.objects.filter(head_delete_user=True).exists()
+
+    any_head_view_employee = Head_Privilege.objects.filter(head_view_employee=True).exists()
+    any_head_add_employee = Head_Privilege.objects.filter(head_add_employee=True).exists()
+    any_head_edit_employee = Head_Privilege.objects.filter(head_edit_employee=True).exists()
+    any_head_delete_employee = Head_Privilege.objects.filter(head_delete_employee=True).exists()
+
+    any_head_view_location =  Head_Privilege.objects.filter(head_view_location=True).exists()
+    any_head_add_location = Head_Privilege.objects.filter(head_add_location=True).exists()
+    any_head_edit_location = Head_Privilege.objects.filter(head_edit_location=True).exists()
+    any_head_delete_location =  Head_Privilege.objects.filter(head_delete_location=True).exists()
+
+    any_head_view_department =  Head_Privilege.objects.filter(head_view_department=True).exists()
+    any_head_add_department = Head_Privilege.objects.filter(head_add_department=True).exists()
+    any_head_edit_department =  Head_Privilege.objects.filter(head_edit_department=True).exists()
+    any_head_delete_department =  Head_Privilege.objects.filter(head_delete_department=True).exists()
+
+    any_head_view_category =  Head_Privilege.objects.filter(head_view_category=True).exists()
+    any_head_add_category = Head_Privilege.objects.filter(head_add_category=True).exists()
+    any_head_edit_category = Head_Privilege.objects.filter(head_edit_category=True).exists()
+    any_head_delete_category =  Head_Privilege.objects.filter(head_delete_category=True).exists()
+
+    return render(request, 'asset_mng/privilege_head.html', {
+        'user_role': user_role,
+        'username': username,
+        'name': name,
+        'head_privilege_update': any_head_privilege_update,
+        'head_report_download': any_head_report_download,
+
+        'head_add_asset': any_head_add_asset,
+        'head_view_asset': any_head_view_asset,
+        'head_edit_asset': any_head_edit_asset,
+        'head_delete_asset': any_head_delete_asset,
+
+        'head_view_user': any_head_view_user,
+        'head_add_user': any_head_add_user,
+        'head_edit_user': any_head_edit_user,
+        'head_delete_user': any_head_delete_user,
+
+        'head_view_employee': any_head_view_employee,
+        'head_add_employee': any_head_add_employee,
+        'head_edit_employee': any_head_edit_employee,
+        'head_delete_employee': any_head_delete_employee,
+
+        'head_view_department': any_head_view_department,
+        'head_add_department': any_head_add_department,
+        'head_edit_department': any_head_edit_department,
+        'head_delete_department': any_head_delete_department,
+
+        'head_view_location': any_head_view_location,
+        'head_add_location': any_head_add_location,
+        'head_edit_location': any_head_edit_location,
+        'head_delete_location': any_head_delete_location,
+
+        'head_view_category': any_head_view_category,
+        'head_add_category': any_head_add_category,
+        'head_edit_category': any_head_edit_category,
+        'head_delete_category': any_head_delete_category,
+    }) 
 
 def asset_list(request):
     users = Asset_Table.objects.all()
+    username = request.session.get('username', None)
     user_role = request.session.get('role',None)
-    add_asset = False                    # Default value for add_asset privilege
+    name = request.session.get('name',None)
+    add_asset = False     
+    view_asset = False
+    edit_asset = False
+    delete_asset = False               # Default value for add_asset privilege
+
+    view_user = False
+    view_employee = False
+    view_location = False
+    view_category = False
+    view_department = False
+
+    privilege_update = False
+    report_download = False
+
+    ciso_add_asset = False
+    ciso_view_asset = False
+    ciso_edit_asset = False
+    ciso_delete_asset = False               # Default value for add_asset privilege
+
+    ciso_view_user = False
+    ciso_view_employee = False
+    ciso_view_location = False
+    ciso_view_category = False
+    ciso_view_department = False
+
+    ciso_privilege_update = False
+    ciso_report_download = False
+
+    head_add_asset = False
+    head_view_asset = False
+    head_edit_asset = False
+    head_delete_asset = False               # Default value for add_asset privilege
+
+    head_view_user = False
+    head_view_employee = False
+    head_view_location = False
+    head_view_category = False
+    head_view_department = False
+
+    head_privilege_update = False
+    head_report_download = False
+    
 
     if user_role == 'asset_owner':      # Check if the logged-in user is an asset owner
         username = request.session.get('username',None)
@@ -504,16 +1762,89 @@ def asset_list(request):
             try:
                 user = UserDetails.objects.get(username=username)
                 #print(f"User found: {user}")  # Debugging statement
-                privilege = AssetOwner_Privilege.objects.get(user=user)
-                add_asset = privilege.add_asset
+                privileges = AssetOwner_Privilege.objects.filter(user=user)
+                if privileges.exists():
+                    add_asset = privileges.filter(add_asset = True).exists()
+                    view_asset = privileges.filter(view_asset = True).exists()
+                    edit_asset = privileges.filter(edit_asset = True).exists()
+                    delete_asset = privileges.filter(delete_asset = True).exists()
+
+                    privilege_update = privileges.filter(privilege_update=True).exists()
+                    report_download = privileges.filter(report_download=True).exists()
+                    view_user = privileges.filter(view_user=True).exists()
+                    view_employee = privileges.filter(view_employee=True).exists()
+                    view_location = privileges.filter(view_location = True).exists()
+                    view_category = privileges.filter(view_category = True).exists()
+                    view_department = privileges.filter(view_department = True).exists()
+
                 #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
             except UserDetails.DoesNotExist:
                 print(f"UserDetails.DoesNotExist: {username}")
             except AssetOwner_Privilege.DoesNotExist:
                 print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")
-    #print(f"user_role = {user_role}, add_asset = {add_asset}")  # Debugging statement
+    elif user_role == 'ciso':
+            username = request.session.get('username',None)        
+            if username:
+                try:
+                    user = UserDetails.objects.get(username = username)
+                    ciso_privileges = CISO_Privilege.objects.filter(user=user)
+                    if ciso_privileges.exists():
+                        ciso_add_asset = ciso_privileges.filter(ciso_add_asset = True).exists()
+                        ciso_view_asset = ciso_privileges.filter(ciso_view_asset = True).exists()
+                        ciso_edit_asset = ciso_privileges.filter(ciso_edit_asset = True).exists()
+                        ciso_delete_asset = ciso_privileges.filter(ciso_delete_asset = True).exists()
+
+                        ciso_privilege_update = ciso_privileges.filter(ciso_privilege_update=True).exists()
+                        ciso_report_download = ciso_privileges.filter(ciso_report_download=True).exists()
+                        ciso_view_user = ciso_privileges.filter(ciso_view_user=True).exists()
+                        ciso_view_employee = ciso_privileges.filter(ciso_view_employee=True).exists()
+                        ciso_view_location = ciso_privileges.filter(ciso_view_location = True).exists()
+                        ciso_view_category = ciso_privileges.filter(ciso_view_category = True).exists()
+                        ciso_view_department = ciso_privileges.filter(ciso_view_department = True).exists()
+                except UserDetails.DoesNotExist:
+                    print(f"UserDetails.DoesNotExist: {username}")
+                except AssetOwner_Privilege.DoesNotExist:
+                    print(f"AssetOwner_Privilege.DoesNotExist for user: {user}") 
+    elif user_role == 'head':      # Check if the logged-in user is an head
+        username = request.session.get('username',None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                #print(f"User found: {user}")  # Debugging statement
+                head_privileges = Head_Privilege.objects.filter(user=user)
+                if head_privileges.exists():
+                    head_add_asset = head_privileges.filter(head_add_asset = True).exists()
+                    head_view_asset = head_privileges.filter(head_view_asset = True).exists()
+                    head_edit_asset = head_privileges.filter(head_edit_asset = True).exists()
+                    head_delete_asset = head_privileges.filter(head_delete_asset = True).exists()
+
+                    head_privilege_update = head_privileges.filter(head_privilege_update=True).exists()
+                    head_report_download = head_privileges.filter(head_report_download=True).exists()
+                    head_view_user = head_privileges.filter(head_view_user=True).exists()
+                    head_view_employee = head_privileges.filter(head_view_employee=True).exists()
+                    head_view_location = head_privileges.filter(head_view_location = True).exists()
+                    head_view_category = head_privileges.filter(head_view_category = True).exists()
+                    head_view_department = head_privileges.filter(head_view_department = True).exists()
+
+                #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")                
+               
     return render(request, 'asset_mng/asset_pro.html', {
-        'users': users,'user_role':user_role,'add_asset':add_asset,
+        'users': users,'name':name,'user_role':user_role,'add_asset':add_asset,
+        'view_asset':view_asset,'edit_asset':edit_asset,'delete_asset':delete_asset,
+        'username':username, 'privilege_update': privilege_update, 'report_download': report_download,
+        'view_user':view_user, 'view_employee':view_employee,'view_location':view_location,'view_category':view_category,'view_department':view_department,
+
+        'ciso_add_asset':ciso_add_asset,'ciso_view_asset':ciso_view_asset,'ciso_edit_asset':ciso_edit_asset,'ciso_delete_asset':ciso_delete_asset,
+        'ciso_privilege_update':ciso_privilege_update,'ciso_report_download':ciso_report_download,
+        'ciso_view_user':ciso_view_user,'ciso_view_employee':ciso_view_employee,'ciso_view_location':ciso_view_location,'ciso_view_category':ciso_view_category,'ciso_view_department':ciso_view_department,
+
+        'head_add_asset':head_add_asset,'head_view_asset':head_view_asset,'head_edit_asset':head_edit_asset,'head_delete_asset':head_delete_asset,
+        'head_privilege_update':head_privilege_update,'head_report_download':head_report_download,
+        'head_view_user':head_view_user,'head_view_employee':head_view_employee,'head_view_location':head_view_location,'head_view_category':head_view_category,'head_view_department':head_view_department,
     })
 
 

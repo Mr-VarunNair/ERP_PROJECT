@@ -195,11 +195,23 @@
     </style>
 </head>
 <body>
-    {% include 'asset_mng/admin_sidebar.html' %}
+    {% if user_role == 'admin' %}
+        {% include 'asset_mng/admin_sidebar.html' %}
+    {% elif user_role == 'asset_owner' %}
+        {% include 'asset_mng/asset_owner_sidebar.html' %}
+    {% elif user_role == 'ciso' %}
+        {% include 'asset_mng/ciso_sidebar.html' %}  
+    {% elif user_role == 'head' %}
+        {% include 'asset_mng/head_sidebar.html' %}      
+    {% endif %}
     <div class="right">
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search by Category Type..." aria-label="Search">
-            <button class="add-button" aria-label="Add User" id="addCategoryButton"><i class="fas fa-plus"></i> Add</button>
+            {% if user_role == 'admin' or add_category %}
+            {% elif user_role == 'admin' or ciso_add_category %}
+            {% elif user_role == 'admin' or head_add_category %}
+                <button class="add-button" aria-label="Add User" id="addCategoryButton"><i class="fas fa-plus"></i> Add</button>
+            {% endif %}    
         </div>
         <div class="table-box">
             <h2>Category</h2>
@@ -210,8 +222,16 @@
                             <th>Sl.No</th>
                             <th>Category Type</th>
                             <th>Status</th>
-                            <th>Edit</th>
-                            <th>Delete</th>
+                            {% if user_role == 'admin' or edit_category %}
+                            {% elif user_role == 'admin' or ciso_edit_category %}
+                            {% elif user_role == 'admin' or head_edit_category %}
+                                <th>Edit</th>
+                            {% endif %}    
+                            {% if user_role == 'admin' or delete_category %}
+                            {% elif user_role == 'admin' or ciso_delete_category %}
+                            {% elif user_role == 'admin' or head_delete_category %}
+                                <th>Delete</th>
+                            {% endif %}    
                         </tr>
                     </thead>
                     <tbody>
@@ -220,15 +240,24 @@
                             <td>{{ forloop.counter}}</td>
                             <td>{{ Category.Category_type }}</td>
                             <td>{{ Category.Status }}</td>
-                            <td class="edit-icon" data-id="{{ Category.id }}">
-                                <i class="fas fa-edit"></i>
-                            </td>
-                            <td>
-                                <form action="{% url 'delete_category' Category.id %}" method="post" onsubmit="return confirm('Are you sure you want to delete this category?');">
-                                    {% csrf_token %}
-                                    <button type="submit" class="delete-icon"><i class="fas fa-trash-alt"></i></button>
-                                </form>
-                            </td>
+                            {% if user_role == 'admin' or edit_category %}
+                            {% elif user_role == 'admin' or ciso_edit_category %}
+                            {% elif user_role == 'admin' or head_edit_category %}
+
+                                <td class="edit-icon" data-id="{{ Category.id }}">
+                                    <i class="fas fa-edit"></i>
+                                </td>
+                            {% endif %}  
+                            {% if user_role == 'admin' or delete_category %}  
+                            {% elif user_role == 'admin' or ciso_delete_category %}
+                            {% elif user_role == 'admin' or head_delete_category %}
+                                <td>
+                                    <form action="{% url 'delete_category' Category.id %}" method="post" onsubmit="return confirm('Are you sure you want to delete this category?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="delete-icon"><i class="fas fa-trash-alt"></i></button>
+                                    </form>
+                                </td>
+                            {% endif %}    
                         </tr>
                         {% endfor %}
                     </tbody>

@@ -89,3 +89,116 @@ class AssetOwner_Privilege(models.Model):
     view_asset = models.BooleanField(default=False)
     edit_asset = models.BooleanField(default=False)
     delete_asset = models.BooleanField(default=False)
+
+    privilege_update = models.BooleanField(default=False)
+    report_download = models.BooleanField(default=False)
+
+    add_user = models.BooleanField(default=False)
+    view_user = models.BooleanField(default=False)
+    edit_user = models.BooleanField(default=False)
+    delete_user = models.BooleanField(default=False)
+
+    add_employee = models.BooleanField(default=False)
+    view_employee = models.BooleanField(default=False)
+    edit_employee = models.BooleanField(default=False)
+    delete_employee = models.BooleanField(default=False)
+
+    add_location = models.BooleanField(default=False)
+    view_location = models.BooleanField(default=False)
+    edit_location = models.BooleanField(default=False)
+    delete_location = models.BooleanField(default=False)
+
+    add_department = models.BooleanField(default=False)
+    view_department = models.BooleanField(default=False)
+    edit_department = models.BooleanField(default=False)
+    delete_department = models.BooleanField(default=False)
+
+    add_category = models.BooleanField(default=False)
+    view_category = models.BooleanField(default=False)
+    edit_category = models.BooleanField(default=False)
+    delete_category = models.BooleanField(default=False)
+
+    add_roles = models.BooleanField(default=False)
+    view_roles = models.BooleanField(default=False)
+    edit_roles = models.BooleanField(default=False)
+    delete_roles = models.BooleanField(default=False)
+
+class CISO_Privilege(models.Model):
+    user = models.ForeignKey(UserDetails, on_delete=models.CASCADE)
+    ciso_add_asset = models.BooleanField(default=False)
+    ciso_view_asset = models.BooleanField(default=False)
+    ciso_edit_asset = models.BooleanField(default=False)
+    ciso_delete_asset = models.BooleanField(default=False)
+
+    ciso_privilege_update = models.BooleanField(default=False)
+    ciso_report_download = models.BooleanField(default=False)
+
+    ciso_add_user = models.BooleanField(default=False)
+    ciso_view_user = models.BooleanField(default=False)
+    ciso_edit_user = models.BooleanField(default=False)
+    ciso_delete_user = models.BooleanField(default=False)
+
+    ciso_add_employee = models.BooleanField(default=False)
+    ciso_view_employee = models.BooleanField(default=False)
+    ciso_edit_employee = models.BooleanField(default=False)
+    ciso_delete_employee = models.BooleanField(default=False)
+
+    ciso_add_location = models.BooleanField(default=False)
+    ciso_view_location = models.BooleanField(default=False)
+    ciso_edit_location = models.BooleanField(default=False)
+    ciso_delete_location = models.BooleanField(default=False)
+
+    ciso_add_department = models.BooleanField(default=False)
+    ciso_view_department = models.BooleanField(default=False)
+    ciso_edit_department = models.BooleanField(default=False)
+    ciso_delete_department = models.BooleanField(default=False)
+
+    ciso_add_category = models.BooleanField(default=False)
+    ciso_view_category = models.BooleanField(default=False)
+    ciso_edit_category = models.BooleanField(default=False)
+    ciso_delete_category = models.BooleanField(default=False)
+
+    ciso_add_roles = models.BooleanField(default=False)
+    ciso_view_roles = models.BooleanField(default=False)
+    ciso_edit_roles = models.BooleanField(default=False)
+    ciso_delete_roles = models.BooleanField(default=False)
+
+class Head_Privilege(models.Model):
+    user = models.ForeignKey(UserDetails, on_delete=models.CASCADE)
+    head_add_asset = models.BooleanField(default=False)
+    head_view_asset = models.BooleanField(default=False)
+    head_edit_asset = models.BooleanField(default=False)
+    head_delete_asset = models.BooleanField(default=False)
+
+    head_privilege_update = models.BooleanField(default=False)
+    head_report_download = models.BooleanField(default=False)
+
+    head_add_user = models.BooleanField(default=False)
+    head_view_user = models.BooleanField(default=False)
+    head_edit_user = models.BooleanField(default=False)
+    head_delete_user = models.BooleanField(default=False)
+
+    head_add_employee = models.BooleanField(default=False)
+    head_view_employee = models.BooleanField(default=False)
+    head_edit_employee = models.BooleanField(default=False)
+    head_delete_employee = models.BooleanField(default=False)
+
+    head_add_location = models.BooleanField(default=False)
+    head_view_location = models.BooleanField(default=False)
+    head_edit_location = models.BooleanField(default=False)
+    head_delete_location = models.BooleanField(default=False)
+
+    head_add_department = models.BooleanField(default=False)
+    head_view_department = models.BooleanField(default=False)
+    head_edit_department = models.BooleanField(default=False)
+    head_delete_department = models.BooleanField(default=False)
+
+    head_add_category = models.BooleanField(default=False)
+    head_view_category = models.BooleanField(default=False)
+    head_edit_category = models.BooleanField(default=False)
+    head_delete_category = models.BooleanField(default=False)
+
+    head_add_roles = models.BooleanField(default=False)
+    head_view_roles = models.BooleanField(default=False)
+    head_edit_roles = models.BooleanField(default=False)
+    head_delete_roles = models.BooleanField(default=False)

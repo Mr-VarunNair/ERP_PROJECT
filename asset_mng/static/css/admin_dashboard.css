@@ -97,7 +97,9 @@ body {
     text-align: center;
     position: relative;
     transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
+    text-decoration: none;
 }
+
 .stat-box:hover {
     transform: translateY(-10px);
     background-color: #e0e0e0;
@@ -107,11 +109,13 @@ body {
     margin: 0;
     font-size: 36px;
     color: #333;
+    text-decoration: none;
 }
 .stat-box p {
     margin: 10px 0 0;
     font-size: 18px;
     color: #666;
+    text-decoration: none;
 }
 .stat-box i {
     font-size: 50px;

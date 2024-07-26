@@ -133,7 +133,11 @@ input:checked + .slider:before {
     
 </head>
 <body>
-    {% include 'asset_mng/admin_sidebar.html' %}   
+    {% if user_role == 'admin' %}
+        {% include 'asset_mng/admin_sidebar.html' %}
+    {% elif user_role == 'asset_owner' %}
+        {% include 'asset_mng/asset_owner_sidebar.html' %}
+    {% endif %}    
     <div class="right">
         <div class="table-box">
             <h2>ASSET OWNER PRIVILEGE</h2>
@@ -157,6 +161,7 @@ input:checked + .slider:before {
                                 <tr>
                                     <td>Assets</td>
                                     <td></td>
+
                                     <td></td>
 
                                     <td>
@@ -186,6 +191,220 @@ input:checked + .slider:before {
                                             <span class="slider round"></span>
                                         </label>
                                     </td>
+                                </tr>
+
+                                <tr>
+                                    <td>User</td>
+                                    <td></td>
+
+                                    <td></td>
+
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name = "view_user" {% if view_user %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name = "edit_user" {% if edit_user %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name = "delete_user" {% if delete_user %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                   
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name="add_user" {% if add_user %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Employee</td>
+                                    <td></td>
+
+                                    <td></td>
+
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name = "view_employee" {% if view_employee %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name = "edit_employee" {% if edit_employee %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name = "delete_employee" {% if delete_employee %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                   
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name="add_employee" {% if add_employee %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Location</td>
+                                    <td></td>
+                                
+                                    <td></td>
+                                
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name = "view_location" {% if view_location %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name = "edit_location" {% if edit_location %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name = "delete_location" {% if delete_location %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                   
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name="add_location" {% if add_location %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>Department</td>
+                                    <td></td>
+                                
+                                    <td></td>
+                                
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name = "view_department" {% if view_department %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name = "edit_department" {% if edit_department %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name = "delete_department" {% if delete_department %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                   
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name="add_department" {% if add_department %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>Category</td>
+                                    <td></td>
+                                
+                                    <td></td>
+                                
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name = "view_category" {% if view_category %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name = "edit_category" {% if edit_category %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name = "delete_category" {% if delete_category %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                   
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name="add_category" {% if add_category %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Privilege</td>
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name = "privilege_update" {% if privilege_update %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+
+                                    <td></td>
+
+                                    <td></td>
+
+                                    <td></td>
+
+                                    <td></td>
+                                   
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Reports</td>
+                                    <td></td>
+
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name = "report_download" {% if report_download %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+
+                                    <td></td>
+
+                                    <td></td>
+
+                                    <td></td>
+                                   
+                                    <td></td>
                                 </tr>
                         </tbody>
                     </table>

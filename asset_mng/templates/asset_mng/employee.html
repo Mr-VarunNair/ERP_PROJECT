@@ -219,12 +219,23 @@
     </style>
 </head>
 <body>
-    {% include 'asset_mng/admin_sidebar.html' %}
-
+    {% if user_role == 'admin' %}
+        {% include 'asset_mng/admin_sidebar.html' %}
+    {% elif user_role == 'asset_owner' %}
+        {% include 'asset_mng/asset_owner_sidebar.html' %}
+    {% elif user_role == 'ciso' %}
+        {% include 'asset_mng/ciso_sidebar.html' %}  
+    {% elif user_role == 'head' %}
+        {% include 'asset_mng/head_sidebar.html' %}      
+    {% endif %} 
     <div class="right">
             <div class="search-container">
                 <input type="text" id="searchInput" placeholder="Search by Name...">
-                <button class="add-button"  id="add-button" type="button"><i class="fas fa-plus"></i> Add</button>
+                {% if user_role == 'admin' or add_employee %}
+                {% elif user_role == 'admin' or ciso_add_employee %}
+                {% elif user_role == 'admin' or head_add_employee %}
+                    <button class="add-button"  id="add-button" type="button"><i class="fas fa-plus"></i> Add</button>
+                {% endif %}    
             </div>
         <div class="table-box">
             <h2>Employee list</h2>
@@ -240,8 +251,16 @@
                         <th>Location</th>
                         <th>Department</th>
                         <th>Status</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
+                        {% if user_role == 'admin' or edit_employee %}
+                        {% elif user_role == 'admin' or ciso_edit_employee %}
+                        {% elif user_role == 'admin' or head_edit_employee %}
+                            <th>Edit</th>
+                        {% endif %} 
+                        {% if user_role == 'admin' or delete_employee %}  
+                        {% elif user_role == 'admin' or ciso_delete_employee %} 
+                        {% elif user_role == 'admin' or head_delete_employee %}
+                            <th>Delete</th>
+                        {% endif %}    
                     </tr>
                 </thead>
                 <tbody>
@@ -254,15 +273,23 @@
                         <td>{{ employee.location}}</td>
                         <td>{{ employee.department}}</td>
                         <td>{{ employee.status}}</td>
-                        <td>
-                            <a class="edit-icon" data-id="{{ employee.id }}"><i class="fas fa-edit"></i></a>
-                        </td>
-                        <td>
-                            <form action="{% url 'delete_employee' employee.id %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit" class="delete-icon"><i class="fas fa-trash-alt"></i></button>
-                            </form>
-                        </td>
+                        {% if user_role == 'admin' or edit_employee %}
+                        {% elif user_role == 'admin' or ciso_edit_employee %}
+                        {% elif user_role == 'admin' or head_edit_employee %}
+                            <td>
+                                <a class="edit-icon" data-id="{{ employee.id }}"><i class="fas fa-edit"></i></a>
+                            </td>
+                        {% endif %}    
+                        {% if user_role == 'admin' or delete_employee %}    
+                        {% elif user_role == 'admin' or ciso_delete_employee %} 
+                        {% elif user_role == 'admin' or head_delete_employee %}
+                            <td>
+                                <form action="{% url 'delete_employee' employee.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="delete-icon"><i class="fas fa-trash-alt"></i></button>
+                                </form>
+                            </td>
+                        {% endif %}    
                     </tr>
                     {% endfor %}
                 </tbody>

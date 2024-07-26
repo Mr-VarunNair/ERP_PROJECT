@@ -1,0 +1,536 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roles</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
+
+    <style>
+        /* Your CSS code remains the same */
+        
+        body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .left {
+            width: 20%;
+            background-color: #222;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            color: white;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #444;
+        }
+        .user-profile img {
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+            margin-right:5px;
+        }
+        .user-profile .username {
+            font-size: 20px;
+            color: white;
+        }
+        .navigation {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .navigation li {
+            margin: 20px 0;
+        }
+        .navigation a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .navigation a:hover {
+            background-color: #444;
+        }
+        
+        .logout-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition-duration: 0.4s;
+            position: absolute;
+            bottom: 10px;
+            width:19.3%
+        }
+        .logout-btn:hover {
+            background-color: #d32f2f;
+        }
+        .right {
+            width: 80%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow: auto;
+            
+        }
+        .search-container {
+            display: flex;
+            justify-content: flex-end; /* Moves the content to the right */
+            align-items: center; /* Aligns items vertically centered */
+            margin-bottom: 10px;
+
+        }
+
+
+        .search-container input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 30px;
+           
+        }
+        .search-container .add-button {
+            padding: 8px 16px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            
+        }
+        .search-container .add-button:hover {
+            background-color: #0056b3;
+        }
+        .table-box {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .table-box h2 {
+            margin-top: 0;
+            font-size: 24px;
+            color: #333;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #575d64;
+            color: #ddd;
+        }
+        .edit-icon{
+            background: none;
+         
+            cursor: pointer;
+            color: #007bff; /* Example: Adjust color as needed */
+            text-align: center;
+        }
+        .delete-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #f44336; 
+        }
+
+        .add-button:hover {
+            background-color: #0056b3;
+        }
+
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 1% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            
+        }
+        .form-container {
+            width: 100%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-header {
+            background-color: #6c757d;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-size: 24px;
+        }
+        .form-body {
+            padding: 10px;
+        }
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            flex-basis: 20%;
+            padding: 10px 0;
+        }
+        .form-group input, .form-group select {
+            flex-basis: 75%; /* Adjust width to accommodate longer inputs */
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%; /* Ensure input fields take full width */
+            box-sizing: border-box;
+        }
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-buttons button {
+            width: 48%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-buttons .save-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        .form-buttons .reset-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        .dropdown {
+            display: none;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .dropdown li {
+            margin: 10px 0;
+        }
+        .dropdown a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .dropdown a:hover, .dropdown a:focus {
+            background-color: #444;
+        }
+        .show-dropdown .dropdown {
+            display: block;
+        }
+        .show-dropdown .navigation > li:not(.settings) {
+            display: none;
+        }
+        .show-dropdown .settings {
+            margin-top: 0;
+        }
+        .settings i.dropdown-icon {
+            margin-left: 10px;
+            transition: transform 0.3s;
+        }
+        .show-dropdown .settings i.dropdown-icon {
+            transform: rotate(180deg);
+        }
+        .close-icon{
+            position: absolute;
+            top: 0px;
+            right: 5px;
+            color: #aaa;
+            font-size: 28px;
+            cursor: pointer;
+            transition:color 0.3s;
+        }
+        .close-icon:hover,
+        .close-icon:focus{
+            color: red;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        dialog {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 25%;
+        }
+        dialog::backdrop {
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .hidden {
+            display: none;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px; /* Adjust spacing */
+        }
+
+       .button-container button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+        .no-results {
+            text-align: center;
+            color:black;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="left">
+        <div class="user-profile">
+            <img src="https://icons.veryicon.com/png/o/miscellaneous/44-2px-linear/people-17.png" alt="User Icon">
+            <div class="username">{{name|upper}}</div>
+        </div>
+        <ul class="navigation" role="navigation">
+            <li><a href="{% url 'admin_dashboard' %}" aria-label="Dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="{% url 'asset_list' %}" aria-label="Assets"><i class="fas fa-box"></i> Assets</a></li>
+            <li><a href="#"><i class="fas fa-users" aria-hidden="true"></i> Users</a></li>
+            <li><a href="{% url 'employee' %}" aria-label="Employee"><i class="fas fa-user-tie"></i> Employee</a></li>
+            <li><a href="#" aria-label="assignwork"><i class="fa fa-clipboard-list"></i>Assign Work</a></li>
+            <li><a href="#" aria-label="Reports"><i class="fas fa-chart-bar"></i> Reports</a></li>
+            <li class="settings"><a href="#" aria-label="Settings" id="settings-link"><i class="fas fa-cog"></i> Settings <i class="fas fa-chevron-down dropdown-icon"></i></a>
+                <ul class="dropdown" id="settings-dropdown">
+                    <li><a href="{% url 'roles' %}" aria-label="Roles"><i class="fas fa-user-tag"></i> Roles</a></li>
+                    <li><a href="#" aria-label="Privileges"><i class="fas fa-user-shield"></i> Privileges</a></li>
+                    <li><a href="{% url 'department' %}" aria-label="Departments"><i class="fas fa-building"></i> Departments</a></li>
+                    <li><a href="#" aria-label="Categories"><i class="fas fa-th-list"></i> Categories</a></li>
+                    <li><a href="#" aria-label="Locations"><i class="fas fa-map-marker-alt"></i> Locations</a></li>
+                </ul>
+            </li>
+            </ul>
+            <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn">Logout</button>
+            </form>
+    </div>
+
+    <div class="right">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search by Name..." aria-label="Search">
+            
+        </div>
+        <div class="table-box">
+            <h2>Roles</h2>
+            <div class="table-container">
+                <table id="userTable" role="table">
+                    <thead>
+                        <tr>
+                            <th>Sl.No</th>
+                            <th>Name</th>
+                            <th>Roles</th>
+                            <th>Status</th>
+                            <th>Edit</th>
+                         
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for UserTable in users %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{UserTable.name}}</td>
+                            <td>{{UserTable.role}}</td>
+                            <td>{{UserTable.status}}</td>
+                            <td class="edit-icon" data-id="{{ UserTable.id }}">
+                                <i class="fas fa-edit"></i>
+                            </td>
+                        
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div id="noResultsMessage" style="display: none;text-align: center;"><h3>No Records Found</h3></div>
+            </div>
+        </div>
+        
+    </div>
+
+ 
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="form-container">
+                <div class="form-header">
+                    Edit User
+                </div>
+                <div class="form-body">
+                    <form id="editUserForm" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" id="editUserId" name="id">
+                        <div class="form-group">
+                            <label for="editName">Name</label>
+                            <input type="text" id="editName" name="name" placeholder="Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="editRole">Role</label>
+                            <select id="editRole" name="role">
+                                <option value="ciso">ciso</option>
+                                <option value="functional_head">functional head</option>
+                                <option value="system_admin">system admin</option>
+                                <option value="asset_owner">asset owner</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editStatus">Status</label>
+                            <select id="editStatus" name="status">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="submit" class="save-btn">Save</button>
+                            <button type="button" class="reset-btn" onclick="closeEditModal()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('settings-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('.left').classList.toggle('show-dropdown');
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const userTable = document.getElementById('userTable').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            const noResultsMessage = document.getElementById('noResultsMessage');
+            const editModal = document.getElementById('editModal');
+            const editUserForm = document.getElementById('editUserForm');
+            
+            searchInput.addEventListener('input', function() {
+                const filter = this.value.toLowerCase();
+                const rows = document.querySelectorAll('#userTable tbody tr');
+                let hasResults = false;
+
+                rows.forEach(row => {
+                    const userType = row.cells[1].textContent.toLowerCase();
+                    if (userType.includes(filter)) {
+                        row.style.display = '';
+                        hasResults = true;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                noResultsMessage.style.display = hasResults ? 'none' : 'block';
+            });
+
+            const editIcons = document.querySelectorAll('.edit-icon');
+    
+    const editUserIdInput = document.getElementById('editUserId');
+    const editNameInput = document.getElementById('editName');
+    const editRoleInput = document.getElementById('editRole');
+    const editStatusInput = document.getElementById('editStatus');
+
+    editIcons.forEach(icon => {
+        icon.addEventListener('click', function() {
+            const userId = this.getAttribute('data-id');
+            const row = this.closest('tr');
+            const name = row.querySelector('td:nth-child(2)').textContent.trim();
+            const role = row.querySelector('td:nth-child(3)').textContent.trim();
+            const status = row.querySelector('td:nth-child(4)').textContent.trim();
+            
+
+
+             // Populate edit form fields with user data
+            editUserIdInput.value = userId;
+            editNameInput.value = name;
+            editRoleInput.value = role;
+            editStatusInput.value = status;
+
+            editUserForm.action = `/edit_roles/${userId}/`;
+
+            // Show the edit modal
+            editModal.style.display = 'block';
+        });
+    });
+    window.addEventListener('click', function(event) {
+                        if (event.target == editModal) {
+                            editModal.style.display = 'none';
+                        }
+                    });
+              
+
+    function closeEditModal() {
+        editModal.style.display = 'none'     
+    }
+
+    const cancelButton = editUserForm.querySelector('.reset-btn');
+        cancelButton.addEventListener('click', function() {
+            closeEditModal();
+        });
+
+
+
+
+
+           
+        });
+    </script>
+
+    
+</body>
+</html>

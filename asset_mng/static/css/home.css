@@ -1,107 +1,99 @@
-*{
+* {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
+
+body {
+    background-image: url("/static/img/erp_bg2.png");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    color: #fff;
+}
+
 .header.sticked {
     position: fixed;
     top: 0;
     right: 0;
     left: 0;
     height: 90px;
-    background-color: rgba(0, 0, 0, 0.037);
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 1000;
 }
-.align-items-center{
-    align-items: center;
-}
-.container-fluid{
-    --bs-gutter-x: 1.5rem;
-    --bs-gutter-y: 0;
-    width: 100%;
-    padding-right: calc(var(--bs-gutter-x) * .5);
-    padding-left: calc(var(--bs-gutter-x) * .5);
-    margin-right: auto;
-    margin-left: auto;
-}
-.d-flex{
-    display: flex;
-}
-@media (min-width:1280px) {.container-xl
-    {
-        max-width: 1140px;
-    }
-    
-}
-.justify-content-between{
-    justify-content: space-between;
-}
-.align-items-center {
-    align-items: center;
-}
-.d-flex {
-    display: flex;
-}    
-a{
-    text-decoration: none;
-}
+
 .header .logo img {
     max-height: 80px;
-    margin-right: 6px;
+    margin-right: 10px;
 }
-@media (min-width: 1280px) {
-    .navbar {
-      padding: 0;
-    }
-}
-.navbar{
-    position: relative;
+
+.navbar {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
+    
+
 }
-@media (min-width: 1280px) {
-    .navbar ul {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      list-style: none;
-      align-items: center;
-    }
+
+.navbar ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
-@media (min-width: 1280px) {
-    .navbar > ul > li {
-      white-space: nowrap;
-      padding: 10px 0 10px 28px;
-    }
+
+.navbar li {
+    padding: 10px 20px;
 }
-@media (min-width: 1280px) {
-    .navbar li {
-      position: relative;
-    }
+
+.navbar a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    transition: color 0.3s;
 }
-@media (min-width: 1280px) {
-    .navbar a, .navbar a:focus {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-family: var(--font-secondary);
-      font-size: 20px;
-      font-weight: 600;
-      color: white;
-      white-space: nowrap;
-      transition: 0.3s;
-      position: relative;
-    }
-}
-.navbar a:hover{
+
+.navbar a:hover {
     color: aqua;
 }
-li:hover{
-    color: black;
+
+.content {
+    padding-top: 100px; /* To avoid content being hidden under the fixed header */
+    min-height: calc(100vh - 150px); /* Adjust based on header and footer height */
 }
-body {
-    background-image: url("/static/img/erp_bg2.png");
-    background-repeat: no-repeat;
-    background-attachment: fixed;  
-    background-size: cover;
-    
+
+.footer {
+    background-color: rgba(0, 0, 0, 0);
+    text-align: center;
+    padding: 20px 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+.footer p {
+    margin: 0;
+    color: #fff;
+    font-size: 14px;
+}
+
+@media (min-width: 1280px) {
+    .container-xl {
+        max-width: 1140px;
+    }
+
+    .navbar ul {
+        align-items: center;
+    }
+
+    .navbar li {
+        white-space: nowrap;
+    }
+
+    .navbar a {
+        font-size: 20px;
+        font-weight: 600;
+    }
 }

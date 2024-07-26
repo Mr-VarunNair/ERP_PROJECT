@@ -10,21 +10,29 @@
 <body>
     <header id="header" class="header d-flex align-items-center sticked">
         <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
-          <a href="#" class="logo d-flex align-items-center">
-            <img src="{% static 'img/logo.png' %}" alt="logo">
-          </a>
-          <nav id="navbar" class="navbar">
-            <ul>
-              <li><a href="#" class="menu">Home</a></li>
-              <li><a href="#" class="menu">About Us</a></li>
-              <li><a href="#" class="menu">Portfolio</a></li>
-              <li><a href="{% url 'asset_login' %}" class="menu">LogIn</a></li>
-              <li><a href="#" class="menu">Contact</a></li>
-              </li>
-            </ul>
-          </nav><!-- .navbar -->
+            <a href="#" class="logo d-flex align-items-center">
+                <img src="{% static 'img/logo.png' %}" alt="logo">
+            </a>
+            <nav id="navbar" class="navbar" style="padding-left: 700px;
+    padding-bottom: 10px;">
+                <ul>
+                    <li><a href="#" class="menu">Home</a></li>
+                    <li><a href="#" class="menu">About Us</a></li>
+                    <li><a href="#" class="menu">Portfolio</a></li>
+                    <li><a href="{% url 'asset_login' %}" class="menu">LogIn</a></li>
+                    <li><a href="#" class="menu">Contact</a></li>
+                </ul>
+            </nav>
         </div>
-      </header>
+    </header>
+    
+    <!--
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Your Company. All rights reserved.</p>
+        </div>
+    </footer>
+    -->
     
 </body>
 </html>

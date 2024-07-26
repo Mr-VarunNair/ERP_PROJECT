@@ -216,11 +216,23 @@ dialog {
     </style>
 </head>
 <body>
-    {% include 'asset_mng/admin_sidebar.html' %}
+    {% if user_role == 'admin' %}
+        {% include 'asset_mng/admin_sidebar.html' %}
+    {% elif user_role == 'asset_owner' %}
+        {% include 'asset_mng/asset_owner_sidebar.html' %}
+    {% elif user_role == 'ciso' %}
+        {% include 'asset_mng/ciso_sidebar.html' %}
+    {% elif user_role == 'head' %}
+        {% include 'asset_mng/head_sidebar.html' %}        
+    {% endif %} 
     <div class="right">
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search by Name..." aria-label="Search">
-            <button class="add-button" aria-label="Add User" id="addUserButton"><i class="fas fa-plus"></i> Add</button>
+            {% if user_role == 'admin' or add_user %}
+            {% elif user_role == 'admin' or ciso_add_user %}
+            {% elif user_role == 'admin' or head_add_user %}
+                <button class="add-button" aria-label="Add User" id="addUserButton"><i class="fas fa-plus"></i> Add</button>
+            {% endif %}    
         </div>
         <div class="table-box">
             <h2>User List</h2>
@@ -236,8 +248,16 @@ dialog {
                             <th>Department</th>
                             <th>Status</th>
                             <th>Role</th>
-                            <th>Edit</th>
-                            <th>Delete</th>
+                            {% if user_role == 'admin' or edit_user %}
+                            {% elif user_role == 'admin' or ciso_edit_user %}
+                            {% elif user_role == 'admin' or head_edit_user %}
+                                <th>Edit</th>
+                            {% endif %}    
+                            {% if user_role == 'admin' or delete_user %}
+                            {% elif user_role == 'admin' or ciso_delete_user %}
+                            {% elif user_role == 'admin' or head_delete_user %}
+                                <th>Delete</th>
+                            {% endif %}    
                         </tr>
                     </thead>
                     <tbody>
@@ -251,16 +271,24 @@ dialog {
                             <td>{{UserTable.department}}</td>
                             <td>{{UserTable.status}}</td>
                             <td>{{UserTable.role}}</td>
-                            <td class="edit-icon" data-id="{{ UserTable.id }}">
-                                <i class="fas fa-edit"></i>
-                            </td>
-                            <td>
-                                <form action="{% url 'delete_user' UserTable.id %}" method="post">
-                                    {% csrf_token %}
-                                    <button type="submit" class="delete-icon"><i class="fas fa-trash-alt"></i></button>
-                                </form>
+                            {% if user_role == 'admin' or edit_user %}
+                            {% elif user_role == 'admin' or ciso_edit_user %}
+                            {% elif user_role == 'admin' or head_edit_user %}
+                                <td class="edit-icon" data-id="{{ UserTable.id }}">
+                                    <i class="fas fa-edit"></i>
+                                </td>
+                            {% endif %}    
+                            {% if user_role == 'admin' or delete_user %}
+                            {% elif user_role == 'admin' or ciso_delete_user %}
+                            {% elif user_role == 'admin' or head_delete_user %}
+                                <td>
+                                    <form action="{% url 'delete_user' UserTable.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="delete-icon"><i class="fas fa-trash-alt"></i></button>
+                                    </form>
                             
-                            </td>
+                                </td>
+                            {% endif %}    
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -325,6 +353,8 @@ dialog {
                                 <option value="selectrole" disabled selected>choose the role</option>
                                 <option value="admin">ADMIN</option>
                                 <option value="asset_owner">ASSET OWNER</option>
+                                <option value="ciso">CISO</option>
+                                <option value="head">HEAD</option>
                             </select>
                         </div>
                         <div class="form-group">
