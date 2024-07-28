@@ -103,6 +103,7 @@
             text-align: center;
             position: relative;
             transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
+            text-decoration: none;
         }
         .stat-box:hover {
             transform: translateY(-10px);
@@ -187,7 +188,9 @@
 
             <li class="settings"><a href="#" aria-label="Settings" id="settings-link"><i class="fas fa-cog"></i> Settings <i class="fas fa-chevron-down dropdown-icon"></i></a>
                 <ul class="dropdown" id="settings-dropdown">
+                    {% if user_role == 'asset_owner' and view_roles %}
                     <li><a href="{% url 'roles' %}" aria-label="Roles"><i class="fas fa-user-tag"></i> Roles</a></li>
+                    {% endif%}
                     {% if user_role == 'asset_owner' and privilege_update%}
                         <li><a href="{% url 'privilege_asset_owner'%}" aria-label="Privileges"><i class="fas fa-user-shield"></i> Privileges</a></li>
                     {% endif %}

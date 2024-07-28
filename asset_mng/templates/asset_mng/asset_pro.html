@@ -290,9 +290,7 @@ dialog::backdrop{
             <p>User Role: {{ user_role }}, Add Asset: {{ add_asset }}</p>
             -->   
             
-            {% if user_role == 'admin' or add_asset %}
-            {% elif user_role == 'admin' or ciso_add_asset %}
-            {% elif user_role == 'admin' or head_add_asset %}
+            {% if user_role == 'admin' or add_asset or ciso_add_asset or head_add_asset %}
             <button class="add-button" aria-label="Add Asset" id="addUserButton"><i class="fas fa-plus"></i> Add</button>
             {% endif %}
         </div>
@@ -310,21 +308,15 @@ dialog::backdrop{
                             <th>Assigned To</th>
                             <th>Images</th>
 
-                            {% if user_role == 'admin' or view_asset %}
-                            {% elif user_role == 'admin' or ciso_view_asset %}
-                            {% elif user_role == 'admin' or head_view_asset %}
+                            {% if user_role == 'admin' or view_asset or ciso_view_asset or head_view_asset%}
                             <th>View</th>
                             {% endif %}
 
-                            {% if user_role == 'admin' or edit_asset %}
-                            {% elif user_role == 'admin' or ciso_edit_asset %}
-                            {% elif user_role == 'admin' or head_edit_asset %}
+                            {% if user_role == 'admin' or edit_asset or ciso_edit_asset or head_edit_asset%}
                             <th>Edit</th>
                             {% endif %}
 
-                            {% if user_role == 'admin' or delete_asset %}
-                            {% elif user_role == 'admin' or ciso_delete_asset %}
-                            {% elif user_role == 'admin' or head_delete_asset %}
+                            {% if user_role == 'admin' or delete_asset or ciso_delete_asset or head_delete_asset%}
                             <th>Delete</th>
                             {% endif %}
 
@@ -348,9 +340,7 @@ dialog::backdrop{
                                 {% endif %}    
                             </td>
 
-                            {% if user_role == 'admin' or view_asset %}
-                            {% elif user_role == 'admin' or ciso_view_asset %}
-                            {% elif user_role == 'admin' or head_view_asset %}
+                            {% if user_role == 'admin' or view_asset or ciso_view_asset or head_view_asset%}
                             <td class="view-icon">
                                 <a href="{% url 'view_asset' user.id %}">
                                     <i class="fas fa-eye"></i>
@@ -358,17 +348,13 @@ dialog::backdrop{
                             </td>
                             {% endif %}
 
-                            {% if user_role == 'admin' or edit_asset %}
-                            {% elif user_role == 'admin' or ciso_edit_asset %}
-                            {% elif user_role == 'admin' or head_edit_asset %}
+                            {% if user_role == 'admin' or edit_asset or ciso_edit_asset or head_edit_asset%}
                             <td class="edit-icon">
                                 <i class="fas fa-edit" data-id="{{ user.id }}"  id="edit-button"></i>
                             </td>
                             {% endif %}
 
-                            {% if user_role == 'admin' or delete_asset %}
-                            {% elif user_role == 'admin' or ciso_delete_asset %}
-                            {% elif user_role == 'admin' or head_delete_asset %}
+                            {% if user_role == 'admin' or delete_asset or ciso_delete_asset or head_delete_asset%}
                             <td>
                                 <form action="{% url 'delete_asset' user.id %}" method="post" >
                                     {% csrf_token %}

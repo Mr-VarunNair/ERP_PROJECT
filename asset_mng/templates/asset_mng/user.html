@@ -228,9 +228,7 @@ dialog {
     <div class="right">
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search by Name..." aria-label="Search">
-            {% if user_role == 'admin' or add_user %}
-            {% elif user_role == 'admin' or ciso_add_user %}
-            {% elif user_role == 'admin' or head_add_user %}
+            {% if user_role == 'admin' or add_user or ciso_add_user or head_add_user%}
                 <button class="add-button" aria-label="Add User" id="addUserButton"><i class="fas fa-plus"></i> Add</button>
             {% endif %}    
         </div>
@@ -248,14 +246,10 @@ dialog {
                             <th>Department</th>
                             <th>Status</th>
                             <th>Role</th>
-                            {% if user_role == 'admin' or edit_user %}
-                            {% elif user_role == 'admin' or ciso_edit_user %}
-                            {% elif user_role == 'admin' or head_edit_user %}
+                            {% if user_role == 'admin' or edit_user or ciso_edit_user or head_edit_user%}
                                 <th>Edit</th>
                             {% endif %}    
-                            {% if user_role == 'admin' or delete_user %}
-                            {% elif user_role == 'admin' or ciso_delete_user %}
-                            {% elif user_role == 'admin' or head_delete_user %}
+                            {% if user_role == 'admin' or delete_user or ciso_delete_user or head_delete_user%}
                                 <th>Delete</th>
                             {% endif %}    
                         </tr>
@@ -271,16 +265,12 @@ dialog {
                             <td>{{UserTable.department}}</td>
                             <td>{{UserTable.status}}</td>
                             <td>{{UserTable.role}}</td>
-                            {% if user_role == 'admin' or edit_user %}
-                            {% elif user_role == 'admin' or ciso_edit_user %}
-                            {% elif user_role == 'admin' or head_edit_user %}
+                            {% if user_role == 'admin' or edit_user or ciso_edit_user or head_edit_user%}
                                 <td class="edit-icon" data-id="{{ UserTable.id }}">
                                     <i class="fas fa-edit"></i>
                                 </td>
                             {% endif %}    
-                            {% if user_role == 'admin' or delete_user %}
-                            {% elif user_role == 'admin' or ciso_delete_user %}
-                            {% elif user_role == 'admin' or head_delete_user %}
+                            {% if user_role == 'admin' or delete_user or ciso_delete_user or head_delete_user%}
                                 <td>
                                     <form action="{% url 'delete_user' UserTable.id %}" method="post">
                                         {% csrf_token %}

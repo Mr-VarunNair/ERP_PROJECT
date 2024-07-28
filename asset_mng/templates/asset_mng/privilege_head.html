@@ -293,6 +293,31 @@ input:checked + .slider:before {
                                     </label>
                                 </td>
                             </tr>
+
+                            <tr>
+                                <td>Roles</td>
+                                <td></td>
+
+                                <td></td>
+
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name = "head_view_roles" {% if head_view_roles %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name = "head_edit_roles" {% if head_edit_roles %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+
+                                <td></td>
+                               
+                                <td></td>
+                            </tr>
                             
                             <tr>
                                 <td>Privilege</td>

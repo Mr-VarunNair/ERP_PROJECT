@@ -231,9 +231,7 @@
     <div class="right">
             <div class="search-container">
                 <input type="text" id="searchInput" placeholder="Search by Name...">
-                {% if user_role == 'admin' or add_employee %}
-                {% elif user_role == 'admin' or ciso_add_employee %}
-                {% elif user_role == 'admin' or head_add_employee %}
+                {% if user_role == 'admin' or add_employee or ciso_add_employee or head_add_employee%}
                     <button class="add-button"  id="add-button" type="button"><i class="fas fa-plus"></i> Add</button>
                 {% endif %}    
             </div>
@@ -251,14 +249,10 @@
                         <th>Location</th>
                         <th>Department</th>
                         <th>Status</th>
-                        {% if user_role == 'admin' or edit_employee %}
-                        {% elif user_role == 'admin' or ciso_edit_employee %}
-                        {% elif user_role == 'admin' or head_edit_employee %}
+                        {% if user_role == 'admin' or edit_employee or ciso_edit_employee or head_edit_employee%}
                             <th>Edit</th>
                         {% endif %} 
-                        {% if user_role == 'admin' or delete_employee %}  
-                        {% elif user_role == 'admin' or ciso_delete_employee %} 
-                        {% elif user_role == 'admin' or head_delete_employee %}
+                        {% if user_role == 'admin' or delete_employee or ciso_delete_employee or head_delete_employee%} 
                             <th>Delete</th>
                         {% endif %}    
                     </tr>
@@ -273,16 +267,12 @@
                         <td>{{ employee.location}}</td>
                         <td>{{ employee.department}}</td>
                         <td>{{ employee.status}}</td>
-                        {% if user_role == 'admin' or edit_employee %}
-                        {% elif user_role == 'admin' or ciso_edit_employee %}
-                        {% elif user_role == 'admin' or head_edit_employee %}
+                        {% if user_role == 'admin' or edit_employee or ciso_edit_employee or head_edit_employee%}
                             <td>
                                 <a class="edit-icon" data-id="{{ employee.id }}"><i class="fas fa-edit"></i></a>
                             </td>
                         {% endif %}    
-                        {% if user_role == 'admin' or delete_employee %}    
-                        {% elif user_role == 'admin' or ciso_delete_employee %} 
-                        {% elif user_role == 'admin' or head_delete_employee %}
+                        {% if user_role == 'admin' or delete_employee or ciso_delete_employee or head_delete_employee%}
                             <td>
                                 <form action="{% url 'delete_employee' employee.id %}" method="post">
                                     {% csrf_token %}

@@ -14,26 +14,6 @@ def home(request):
     return render(request,'home.html')
 def prpty_mng(request):       
     return render(request,'prpty_mng.html')
-def amc_mng(request):
-    return render(request,'amc_mng.html')
-def store_mng(request):
-    return render(request,'store_mng.html')
-def rem_schedule(request):
-    return render(request,'rem_schedule.html')
-def vehicle_mng(request):
-    return render(request,'vehicle_mng.html')
-def build_mnt(request):
-    return render(request,'build_mnt.html')
-def iso_mng(request):
-    return render(request,'iso_mng.html')
-def house_mng(request):
-    return render(request,'house_mng.html')
-def purchase_mng(request):
-    return render(request,'purchase_mng.html')
-def tax_building(request):
-    return render(request,'tax_building.html')
-def tenant_mng(request):
-    return render(request,'tenant_mng.html')
 
 def admin_dashboard(request):
     total_users = UserDetails.objects.count()
@@ -50,7 +30,6 @@ def head_dashboard(request):
     total_assets = Asset_Table.objects.count()
     total_dept = Department.objects.count()
     total_emp = Employee.objects.count()
-
     username = request.session.get('username', None)
     user_role = request.session.get('role', None)
     name = request.session.get('name', None)
@@ -68,6 +47,7 @@ def head_dashboard(request):
     head_view_location = head_privileges.filter(head_view_location=True).exists()
     head_view_category = head_privileges.filter(head_view_category=True).exists()
     head_view_department = head_privileges.filter(head_view_department=True).exists()
+    head_view_roles = head_privileges.filter(head_view_roles=True).exists()
 
     context = {
         'username': username,
@@ -80,6 +60,7 @@ def head_dashboard(request):
         'head_view_location': head_view_location,
         'head_view_category': head_view_category,
         'head_view_department': head_view_department,
+        'head_view_roles':head_view_roles,
         'total_users': total_users,
         'total_assets': total_assets,
         'total_dept': total_dept,
@@ -104,11 +85,11 @@ def ciso_dashboard(request):
     ciso_privilege_update = ciso_privileges.filter(ciso_privilege_update=True).exists()
     ciso_report_download = ciso_privileges.filter(ciso_report_download=True).exists()
     ciso_view_user = ciso_privileges.filter(ciso_view_user =True).exists()
-    #add_user = privileges.filter(add_user =True).exists()
     ciso_view_employee = ciso_privileges.filter(ciso_view_employee =True).exists()
     ciso_view_location = ciso_privileges.filter(ciso_view_location = True).exists()
     ciso_view_category = ciso_privileges.filter(ciso_view_category = True).exists()
     ciso_view_department = ciso_privileges.filter(ciso_view_department = True).exists()
+    ciso_view_roles = ciso_privileges.filter(ciso_view_roles = True).exists()
 
     context = {
         'username': username,
@@ -122,6 +103,7 @@ def ciso_dashboard(request):
         'ciso_view_location' : ciso_view_location,
         'ciso_view_category' : ciso_view_category,
         'ciso_view_department' : ciso_view_department,
+        'ciso_view_roles':ciso_view_roles,
         'total_users' : total_users,
         'total_assets' : total_assets,
         'total_dept' : total_dept,
@@ -154,6 +136,7 @@ def asset_owner_dashboard(request):
     view_location = privileges.filter(view_location = True).exists()
     view_category = privileges.filter(view_category = True).exists()
     view_department = privileges.filter(view_department = True).exists()
+    view_roles = privileges.filter(view_roles = True).exists()
 
     context = {
         'username': username,
@@ -167,6 +150,7 @@ def asset_owner_dashboard(request):
         'view_location' : view_location,
         'view_category' : view_category,
         'view_department' : view_department,
+        'view_roles':view_roles,
         'total_users' : total_users,
         'total_assets' : total_assets,
         'total_dept' : total_dept,
@@ -175,9 +159,6 @@ def asset_owner_dashboard(request):
     }
 
     return render(request, 'asset_mng/asset_owner.html', context)
-
-
-
 
 def asset_login(request):
     if request.method == 'POST':
@@ -226,6 +207,7 @@ def user_list(request):
     view_location = False
     view_category = False
     view_department = False
+    view_roles = False
 
     ciso_view_user = False
     ciso_add_user = False
@@ -237,6 +219,7 @@ def user_list(request):
     ciso_view_location = False
     ciso_view_category = False
     ciso_view_department = False
+    ciso_view_roles = False
 
     head_view_user = False
     head_add_user = False
@@ -248,6 +231,7 @@ def user_list(request):
     head_view_location = False
     head_view_category = False
     head_view_department = False
+    head_view_roles = False
 
 
 
@@ -270,6 +254,7 @@ def user_list(request):
                     view_location = privileges.filter(view_location = True).exists()
                     view_category = privileges.filter(view_category = True).exists()
                     view_department = privileges.filter(view_department = True).exists()
+                    view_roles = privileges.filter(view_roles = True).exists()
                 #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
             except UserDetails.DoesNotExist:
                 print(f"UserDetails.DoesNotExist: {username}")
@@ -295,6 +280,8 @@ def user_list(request):
                     ciso_view_location = ciso_privileges.filter(ciso_view_location = True).exists()
                     ciso_view_category = ciso_privileges.filter(ciso_view_category = True).exists()
                     ciso_view_department = ciso_privileges.filter(ciso_view_department = True).exists()
+                    ciso_view_roles = ciso_privileges.filter(ciso_view_roles = True).exists()
+
                 #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
             except UserDetails.DoesNotExist:
                 print(f"UserDetails.DoesNotExist: {username}")
@@ -320,6 +307,7 @@ def user_list(request):
                     head_view_location = head_privileges.filter(head_view_location = True).exists()
                     head_view_category = head_privileges.filter(head_view_category = True).exists()
                     head_view_department = head_privileges.filter(head_view_department = True).exists()
+                    head_view_roles = head_privileges.filter(head_view_roles = True).exists()
                 #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
             except UserDetails.DoesNotExist:
                 print(f"UserDetails.DoesNotExist: {username}")
@@ -328,15 +316,15 @@ def user_list(request):
 
     return render(request,'asset_mng/user.html',{'users':users,'departments': departments,'locations':locations, 'user_role': user_role,
                                                  'name':name, 'view_user':view_user, 'add_user' : add_user, 'edit_user' : edit_user, 'delete_user': delete_user,
-                                                 'privilege_update':privilege_update,
+                                                 'privilege_update':privilege_update,'view_roles':view_roles,
                                                  'report_download':report_download, 'view_employee': view_employee,'view_location':view_location,'view_category':view_category,'view_department':view_department,
 
                                                  'ciso_add_user':ciso_add_user,'ciso_view_user':ciso_view_user,'ciso_edit_user':ciso_edit_user,'ciso_delete_user':ciso_delete_user,
-                                                 'ciso_privilege_update':ciso_privilege_update,'ciso_report_download':ciso_report_download,
+                                                 'ciso_privilege_update':ciso_privilege_update,'ciso_report_download':ciso_report_download,'ciso_view_roles':ciso_view_roles,
                                                  'ciso_view_employee':ciso_view_employee,'ciso_view_location':ciso_view_location,'ciso_view_category':ciso_view_category,'ciso_view_department':ciso_view_department,
                                                  
                                                  'head_add_user':head_add_user,'head_view_user':head_view_user,'head_edit_user':head_edit_user,'head_delete_user':head_delete_user,
-                                                 'head_privilege_update':head_privilege_update,'head_report_download':head_report_download,
+                                                 'head_privilege_update':head_privilege_update,'head_report_download':head_report_download,'head_view_roles':head_view_roles,
                                                  'head_view_employee':head_view_employee,'head_view_location':head_view_location,'head_view_category':head_view_category,'head_view_department':head_view_department,
                                                  })
 
@@ -431,6 +419,8 @@ def department_list(request):
     view_location = False
     view_category = False
     view_employee = False
+    view_roles = False
+    
 
     ciso_add_department = False
     ciso_view_department = False
@@ -443,6 +433,7 @@ def department_list(request):
     ciso_view_location = False
     ciso_view_category = False
     ciso_view_employee = False
+    ciso_view_roles = False
 
     head_view_department = False
     head_add_department = False
@@ -455,6 +446,7 @@ def department_list(request):
     head_view_location = False
     head_view_category = False
     head_view_employee = False
+    head_view_roles = False
 
     if user_role == 'asset_owner':      # Check if the logged-in user is an asset owner
         username = request.session.get('username',None)
@@ -475,6 +467,7 @@ def department_list(request):
                     view_location = privileges.filter(view_location = True).exists()
                     view_category = privileges.filter(view_category = True).exists()
                     view_employee = privileges.filter(view_employee = True).exists()
+                    view_roles = privileges.filter(view_roles = True).exists()
 
                 #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
             except UserDetails.DoesNotExist:
@@ -500,6 +493,7 @@ def department_list(request):
                     ciso_view_location = ciso_privileges.filter(ciso_view_location = True).exists()
                     ciso_view_category = ciso_privileges.filter(ciso_view_category = True).exists()
                     ciso_view_employee = ciso_privileges.filter(ciso_view_employee = True).exists()
+                    ciso_view_roles = ciso_privileges.filter(ciso_view_roles = True).exists()
 
                 #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
             except UserDetails.DoesNotExist:
@@ -525,6 +519,7 @@ def department_list(request):
                     head_view_location = head_privileges.filter(head_view_location = True).exists()
                     head_view_category = head_privileges.filter(head_view_category = True).exists()
                     head_view_employee = head_privileges.filter(head_view_employee = True).exists()
+                    head_view_roles = head_privileges.filter(head_view_roles = True).exists()
 
                 #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
             except UserDetails.DoesNotExist:
@@ -535,15 +530,15 @@ def department_list(request):
 
     return render(request, 'asset_mng/department_list.html', {'departments': departments,  'user_role': user_role,'name': name,
                                                        'add_department': add_department, 'view_department': view_department, 'edit_department': edit_department, 'delete_department': delete_department,
-                                                       'privilege_update': privilege_update, 'report_download': report_download,
+                                                       'privilege_update': privilege_update, 'report_download': report_download,'view_roles':view_roles,
                                                        'view_user': view_user,'view_location':view_location, 'view_category': view_category,'view_employee':view_employee,
                                                        
                                                        'ciso_add_department':ciso_add_department,'ciso_view_department':ciso_view_department,'ciso_edit_department':ciso_edit_department,'ciso_delete_department':ciso_delete_department,
                                                        'ciso_privilege_update':ciso_privilege_update,'ciso_report_download':ciso_report_download,'ciso_view_user':ciso_view_user,'ciso_view_location':ciso_view_location,
-                                                       'ciso_view_category':ciso_view_category,'ciso_view_employee':ciso_view_employee,
+                                                       'ciso_view_category':ciso_view_category,'ciso_view_employee':ciso_view_employee,'ciso_view_roles':ciso_view_roles,
                                                        
                                                        'head_add_department':head_add_department,'head_view_department':head_view_department,'head_edit_department':head_edit_department,'head_delete_department':head_delete_department,
-                                                       'head_privilege_update':head_privilege_update,'head_report_download':head_report_download,
+                                                       'head_privilege_update':head_privilege_update,'head_report_download':head_report_download,'head_view_roles':head_view_roles,
                                                        'head_view_user':head_view_user,'head_view_location':head_view_location,'head_view_category':head_view_category,'head_view_employee':head_view_employee,
                                                        })
 
@@ -615,6 +610,7 @@ def location_list(request):
     view_employee = False
     view_category = False
     view_department = False
+    view_roles = False
 
     ciso_view_location = False
     ciso_add_location = False
@@ -626,6 +622,7 @@ def location_list(request):
     ciso_view_employee = False
     ciso_view_category = False
     ciso_view_department = False
+    ciso_view_roles = False
 
     head_view_location = False
     head_add_location = False
@@ -637,6 +634,7 @@ def location_list(request):
     head_view_employee = False
     head_view_category = False
     head_view_department = False
+    head_view_roles = False
 
     
 
@@ -659,6 +657,7 @@ def location_list(request):
                     view_employee = privileges.filter(view_employee = True).exists()
                     view_category = privileges.filter(view_category = True).exists()
                     view_department = privileges.filter(view_department = True).exists()
+                    view_roles = privileges.filter(view_roles = True).exists()
 
 
 
@@ -686,6 +685,7 @@ def location_list(request):
                     ciso_view_employee = ciso_privileges.filter(ciso_view_employee = True).exists()
                     ciso_view_category = ciso_privileges.filter(ciso_view_category = True).exists()
                     ciso_view_department = ciso_privileges.filter(ciso_view_department = True).exists()
+                    ciso_view_roles = ciso_privileges.filter(ciso_view_roles = True).exists()
 
                 #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
             except UserDetails.DoesNotExist:
@@ -712,6 +712,7 @@ def location_list(request):
                     head_view_employee = head_privileges.filter(head_view_employee = True).exists()
                     head_view_category = head_privileges.filter(head_view_category = True).exists()
                     head_view_department = head_privileges.filter(head_view_department = True).exists()
+                    head_view_roles = head_privileges.filter(head_view_roles = True).exists()
 
 
 
@@ -723,15 +724,15 @@ def location_list(request):
 
     return render(request,'asset_mng/location_pro.html',{'users':users, 'user_role': user_role,'name': name,
                                                        'add_location': add_location, 'view_location': view_location, 'edit_location': edit_location, 'delete_location': delete_location,
-                                                       'privilege_update': privilege_update, 'report_download': report_download,
+                                                       'privilege_update': privilege_update, 'report_download': report_download,'view_roles':view_roles,
                                                        'view_user': view_user,'view_employee':view_employee,'view_category':view_category,'view_department':view_department,
 
                                                        'ciso_add_location':ciso_add_location,'ciso_view_location':ciso_view_location,'ciso_edit_location':ciso_edit_location,'ciso_delete_location':ciso_delete_location,
-                                                       'ciso_privilege_update':ciso_privilege_update,'ciso_report_download':ciso_report_download,
+                                                       'ciso_privilege_update':ciso_privilege_update,'ciso_report_download':ciso_report_download,'ciso_view_roles':ciso_view_roles,
                                                        'ciso_view_user':ciso_view_user,'ciso_view_employee':ciso_view_employee,'ciso_view_category':ciso_view_category,'ciso_view_department':ciso_view_department,
                                                        
                                                        'head_add_location':head_add_location,'head_view_location':head_view_location,'head_edit_location':head_edit_location,'head_delete_location':head_delete_location,
-                                                       'head_privilege_update':head_privilege_update,'head_report_download':head_report_download,
+                                                       'head_privilege_update':head_privilege_update,'head_report_download':head_report_download,'head_view_roles':head_view_roles,
                                                        'head_view_user':head_view_user,'head_view_employee':head_view_employee,'head_view_category':head_view_category,'head_view_department':head_view_department,
                                                        })
 
@@ -807,6 +808,7 @@ def category_list(request):
     view_location = False
     view_employee = False
     view_department = False
+    view_roles = False
 
     ciso_view_category = False
     ciso_add_category = False
@@ -818,6 +820,7 @@ def category_list(request):
     ciso_view_location = False
     ciso_view_employee = False
     ciso_view_department = False
+    ciso_view_roles = False
 
     head_view_category = False
     head_add_category = False
@@ -829,6 +832,7 @@ def category_list(request):
     head_view_location = False
     head_view_employee = False
     head_view_department = False
+    head_view_roles = False
 
 
 
@@ -851,6 +855,7 @@ def category_list(request):
                     view_location = privileges.filter(view_location = True).exists()
                     view_employee = privileges.filter(view_employee = True).exists()
                     view_department = privileges.filter(view_department = True).exists()
+                    view_roles = privileges.filter(view_roles = True).exists()
 
                 #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
             except UserDetails.DoesNotExist:
@@ -877,6 +882,7 @@ def category_list(request):
                     ciso_view_location = ciso_privileges.filter(ciso_view_location = True).exists()
                     ciso_view_employee = ciso_privileges.filter(ciso_view_employee = True).exists()
                     ciso_view_department = ciso_privileges.filter(ciso_view_department = True).exists()
+                    ciso_view_roles = ciso_privileges.filter(ciso_view_roles = True).exists()
 
                 #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
             except UserDetails.DoesNotExist:
@@ -903,6 +909,7 @@ def category_list(request):
                     head_view_location = head_privileges.filter(head_view_location = True).exists()
                     head_view_employee = head_privileges.filter(head_view_employee = True).exists()
                     head_view_department = head_privileges.filter(head_view_department = True).exists()
+                    head_view_roles = head_privileges.filter(head_view_roles = True).exists()
 
                 #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
             except UserDetails.DoesNotExist:
@@ -912,14 +919,14 @@ def category_list(request):
 
     return render(request, 'asset_mng/category.html', {'categories': categories, 'user_role': user_role,'name': name,
                                                        'add_category': add_category, 'view_category': view_category, 'edit_category': edit_category, 'delete_category': delete_category,
-                                                       'privilege_update': privilege_update, 'report_download': report_download,
+                                                       'privilege_update': privilege_update, 'report_download': report_download,'view_roles':view_roles,
                                                        'view_user': view_user,'view_location':view_location,'view_employee': view_employee,'view_department':view_department,
 
-                                                       'ciso_add_category':ciso_add_category,'ciso_view_category':ciso_view_category,'ciso_edit_category':ciso_edit_category,'ciso_delete_category':ciso_delete_category,
+                                                       'ciso_add_category':ciso_add_category,'ciso_view_category':ciso_view_category,'ciso_edit_category':ciso_edit_category,'ciso_delete_category':ciso_delete_category,'ciso_view_roles':ciso_view_roles,
                                                        'ciso_privilege_update':ciso_privilege_update,'ciso_report_download':ciso_report_download,'ciso_view_user':ciso_view_user,'ciso_view_location':ciso_view_location,'ciso_view_employee':ciso_view_employee,'ciso_view_department':ciso_view_department,
                                                        
                                                        'head_add_category':head_add_category,'head_view_category':head_view_category,'head_edit_category':head_edit_category,'head_delete_category':head_delete_category,
-                                                       'head_privilege_update':head_privilege_update,'head_report_download':head_report_download,
+                                                       'head_privilege_update':head_privilege_update,'head_report_download':head_report_download,'head_view_roles':head_view_roles,
                                                        'head_view_user':head_view_user,'head_view_location':head_view_location,'head_view_employee':head_view_employee,'head_view_department':head_view_department,
                                                        })
 
@@ -971,6 +978,136 @@ def edit_category(request,category_id):
     return redirect('category_list')
 
 
+def roles(request):
+    users=UserDetails.objects.all()
+    name = request.session.get('name', None)
+    username = request.session.get('username', None)
+    user_role = request.session.get('role',None)
+    view_roles = False
+    edit_roles = False
+    privilege_update = False
+    report_download = False
+    view_employee = False
+    view_location = False
+    view_category = False
+    view_department = False
+    view_user = False
+
+    ciso_view_roles = False
+    ciso_edit_roles = False
+    ciso_view_user = False
+    ciso_privilege_update = False
+    ciso_report_download = False
+    ciso_view_employee = False
+    ciso_view_location = False
+    ciso_view_category = False
+    ciso_view_department = False
+
+    head_view_roles = False
+    head_edit_roles = False
+    head_view_user = False
+    head_privilege_update = False
+    head_report_download = False
+    head_view_employee = False
+    head_view_location = False
+    head_view_category = False
+    head_view_department = False
+
+    if user_role == 'asset_owner':  # Check if the logged-in user is an asset owner
+        username = request.session.get('username', None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                privileges = AssetOwner_Privilege.objects.filter(user=user)
+                if privileges.exists():
+                    report_download = privileges.filter(report_download=True).exists()
+                    privilege_update = privileges.filter(privilege_update=True).exists()
+                    view_user = privileges.filter(view_user=True).exists()
+                    view_employee = privileges.filter(view_employee=True).exists()
+                    view_location = privileges.filter(view_location = True).exists()
+                    view_category = privileges.filter(view_category = True).exists()
+                    view_department = privileges.filter(view_department = True).exists()
+                    view_roles = privileges.filter(view_roles = True).exists()
+                    edit_roles = privileges.filter(edit_roles = True).exists()
+
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")
+    elif user_role == 'ciso':  # Check if the logged-in user is an ciso
+        username = request.session.get('username', None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                ciso_privileges = CISO_Privilege.objects.filter(user=user)
+                if ciso_privileges.exists():
+                    ciso_report_download = ciso_privileges.filter(ciso_report_download=True).exists()
+                    ciso_privilege_update = ciso_privileges.filter(ciso_privilege_update=True).exists()
+                    ciso_view_user = ciso_privileges.filter(ciso_view_user=True).exists()
+                    ciso_view_employee = ciso_privileges.filter(ciso_view_employee=True).exists()
+                    ciso_view_location = ciso_privileges.filter(ciso_view_location = True).exists()
+                    ciso_view_category = ciso_privileges.filter(ciso_view_category = True).exists()
+                    ciso_view_department = ciso_privileges.filter(ciso_view_department = True).exists()
+                    ciso_view_roles = ciso_privileges.filter(ciso_view_roles = True).exists()
+                    ciso_edit_roles = ciso_privileges.filter(ciso_edit_roles = True).exists()
+                    
+
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")  
+
+    elif user_role == 'head':  # Check if the logged-in user is an asset owner
+        username = request.session.get('username', None)
+        if username:
+            try:
+                user = UserDetails.objects.get(username=username)
+                head_privileges = Head_Privilege.objects.filter(user=user)
+                if head_privileges.exists():
+                    head_report_download = head_privileges.filter(head_report_download=True).exists()
+                    head_privilege_update = head_privileges.filter(head_privilege_update=True).exists()
+                    head_view_user = head_privileges.filter(head_view_user=True).exists()
+                    head_view_employee = head_privileges.filter(head_view_employee=True).exists()
+                    head_view_location = head_privileges.filter(head_view_location = True).exists()
+                    head_view_category = head_privileges.filter(head_view_category = True).exists()
+                    head_view_department = head_privileges.filter(head_view_department = True).exists()
+                    head_view_roles = head_privileges.filter(head_view_roles = True).exists()
+                    head_edit_roles = head_privileges.filter(head_edit_roles = True).exists()
+
+            except UserDetails.DoesNotExist:
+                print(f"UserDetails.DoesNotExist: {username}")
+            except AssetOwner_Privilege.DoesNotExist:
+                print(f"AssetOwner_Privilege.DoesNotExist for user: {user}")  
+
+    context = { 
+        'name': name,'users': users,'username':username,'user_role':user_role,'view_roles':view_roles,'edit_roles':edit_roles,
+        'privilege_update':privilege_update,'report_download':report_download,'view_employee':view_employee,'view_location':view_location,'view_category':view_category,'view_department':view_department,'view_user':view_user,
+
+        'ciso_view_roles':ciso_view_roles,'ciso_edit_roles':ciso_edit_roles,'ciso_view_user':ciso_view_user,'ciso_privilege_update':ciso_privilege_update,'ciso_report_download':ciso_report_download,
+        'ciso_view_employee':ciso_view_employee,'ciso_view_location':ciso_view_location,'ciso_view_category':ciso_view_category,'ciso_view_department':ciso_view_department,
+
+        'head_view_roles':head_view_roles,'head_edit_roles':head_edit_roles,'head_view_user':head_view_user,'head_privilege_update':head_privilege_update,'head_report_download':head_report_download,
+        'head_view_employee':head_view_employee,'head_view_location':head_view_location,'head_view_category':head_view_category,'head_view_department':head_view_department,
+    }
+    return render(request,'asset_mng/roles.html',context)
+
+
+def edit_roles(request,user_id):
+    if request.method == 'POST':
+        user_id = request.POST.get('id')
+        user = get_object_or_404(UserDetails, pk=user_id)
+        user.name = request.POST.get('name')
+        
+        user.status = request.POST.get('status')
+        user.role = request.POST.get('role')
+      
+        user.save()
+        messages.success(request, 'User updated successfully.')
+        return redirect('roles')  # Redirect to user list page
+    else:
+        return redirect('roles')  # Redirect if not a POST request
+
+
 
 def employee(request):
     employees = Employee.objects.all()
@@ -987,6 +1124,7 @@ def employee(request):
     view_location = False
     view_category = False
     view_department = False
+    view_roles = False
 
     ciso_view_employee = False
     ciso_add_employee = False
@@ -998,6 +1136,7 @@ def employee(request):
     ciso_view_location = False
     ciso_view_category = False
     ciso_view_department = False
+    ciso_view_roles = False
 
     head_view_employee = False
     head_add_employee = False
@@ -1009,6 +1148,7 @@ def employee(request):
     head_view_location = False
     head_view_category = False
     head_view_department = False
+    head_view_roles = False
 
     if user_role == 'asset_owner':      # Check if the logged-in user is an asset owner
         username = request.session.get('username',None)
@@ -1029,6 +1169,7 @@ def employee(request):
                     view_location = privileges.filter(view_location = True).exists()
                     view_category = privileges.filter(view_category = True).exists()
                     view_department = privileges.filter(view_department = True).exists()
+                    view_roles = privileges.filter(view_roles = True).exists()
 
                 #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
             except UserDetails.DoesNotExist:
@@ -1055,7 +1196,8 @@ def employee(request):
                     ciso_view_user = ciso_privileges.filter(ciso_view_user=True).exists()
                     ciso_view_location = ciso_privileges.filter(ciso_view_location = True).exists()
                     ciso_view_category = ciso_privileges.filter(ciso_view_category = True).exists()
-                    ciso_view_department = ciso_privileges.filter(ciso_view_department = True).exists()    
+                    ciso_view_department = ciso_privileges.filter(ciso_view_department = True).exists()
+                    ciso_view_roles = ciso_privileges.filter(ciso_view_roles = True).exists()    
             except UserDetails.DoesNotExist:
                 print(f"UserDetails.DoesNotExist: {username}")
             except AssetOwner_Privilege.DoesNotExist:
@@ -1079,6 +1221,7 @@ def employee(request):
                     head_view_location = head_privileges.filter(head_view_location = True).exists()
                     head_view_category = head_privileges.filter(head_view_category = True).exists()
                     head_view_department = head_privileges.filter(head_view_department = True).exists()
+                    head_view_roles = head_privileges.filter(head_view_roles = True).exists()
 
                 #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
             except UserDetails.DoesNotExist:
@@ -1089,16 +1232,16 @@ def employee(request):
 
     return render(request, 'asset_mng/employee.html', {'employees': employees, 'user_role': user_role,'name': name,
                                                        'add_employee': add_employee, 'view_employee': view_employee, 'edit_employee': edit_employee, 'delete_employee': delete_employee,
-                                                       'privilege_update': privilege_update, 'report_download': report_download,
+                                                       'privilege_update': privilege_update, 'report_download': report_download,'view_roles':view_roles,
                                                        'view_user': view_user,'view_location':view_location, 'view_category': view_category, 'view_department':view_department,
 
                                                         'ciso_add_employee':ciso_add_employee,'ciso_view_employee':ciso_view_employee,'ciso_edit_employee':ciso_edit_employee,
-                                                       'ciso_delete_employee':ciso_delete_employee,'ciso_privilege_update':ciso_privilege_update,
+                                                       'ciso_delete_employee':ciso_delete_employee,'ciso_privilege_update':ciso_privilege_update,'ciso_view_roles':ciso_view_roles,
                                                        'ciso_report_download':ciso_report_download,'ciso_view_user':ciso_view_user,'ciso_view_location':ciso_view_location,
                                                        'ciso_view_category':ciso_view_category,'ciso_view_department':ciso_view_department,
                                                        
                                                        'head_add_employee':head_add_employee,'head_view_employee':head_view_employee,'head_edit_employee':head_edit_employee,'head_delete_employee':head_delete_employee,
-                                                       'head_privilege_update':head_privilege_update,'head_report_download':head_report_download,
+                                                       'head_privilege_update':head_privilege_update,'head_report_download':head_report_download,'head_view_roles':head_view_roles,
                                                        'head_view_user':head_view_user,'head_view_location':head_view_location,'head_view_category':head_view_category,'head_view_department':head_view_department,
 
                                                        })
@@ -1182,6 +1325,7 @@ def reports_view(request):
     view_location = False
     view_category = False
     view_department = False
+    view_roles = False
 
     ciso_report_download = False
     ciso_privilege_update = False
@@ -1190,6 +1334,7 @@ def reports_view(request):
     ciso_view_location = False
     ciso_view_category = False
     ciso_view_department = False
+    ciso_view_roles = False
 
     head_report_download = False
     head_privilege_update = False
@@ -1198,6 +1343,7 @@ def reports_view(request):
     head_view_location = False
     head_view_category = False
     head_view_department = False
+    head_view_roles = False
 
 
     if user_role == 'asset_owner':  # Check if the logged-in user is an asset owner
@@ -1214,6 +1360,7 @@ def reports_view(request):
                     view_location = privileges.filter(view_location = True).exists()
                     view_category = privileges.filter(view_category = True).exists()
                     view_department = privileges.filter(view_department = True).exists()
+                    view_roles = privileges.filter(view_roles = True).exists()
 
             except UserDetails.DoesNotExist:
                 print(f"UserDetails.DoesNotExist: {username}")
@@ -1233,6 +1380,7 @@ def reports_view(request):
                     ciso_view_location = ciso_privileges.filter(ciso_view_location = True).exists()
                     ciso_view_category = ciso_privileges.filter(ciso_view_category = True).exists()
                     ciso_view_department = ciso_privileges.filter(ciso_view_department = True).exists()
+                    ciso_view_roles = ciso_privileges.filter(ciso_view_roles = True).exists()
 
             except UserDetails.DoesNotExist:
                 print(f"UserDetails.DoesNotExist: {username}")
@@ -1253,6 +1401,7 @@ def reports_view(request):
                     head_view_location = head_privileges.filter(head_view_location = True).exists()
                     head_view_category = head_privileges.filter(head_view_category = True).exists()
                     head_view_department = head_privileges.filter(head_view_department = True).exists()
+                    head_view_roles = head_privileges.filter(head_view_roles = True).exists()
 
             except UserDetails.DoesNotExist:
                 print(f"UserDetails.DoesNotExist: {username}")
@@ -1265,13 +1414,13 @@ def reports_view(request):
         'selected_table': None,
         'user_role': user_role,
         'name': name,
-        'report_download': report_download,
+        'report_download': report_download,'view_roles':view_roles,
         'privilege_update': privilege_update,'view_user':view_user, 'view_employee':view_employee,'view_location':view_location,'view_category':view_category,'view_department':view_department,
 
-        'ciso_report_download':ciso_report_download,'ciso_privilege_update':ciso_privilege_update,
+        'ciso_report_download':ciso_report_download,'ciso_privilege_update':ciso_privilege_update,'ciso_view_roles':ciso_view_roles,
         'ciso_view_user':ciso_view_user,'ciso_view_employee':ciso_view_employee,'ciso_view_location':ciso_view_location,'ciso_view_category':ciso_view_category,'ciso_view_department':ciso_view_department,
 
-        'head_report_download':head_report_download,'head_privilege_update':head_privilege_update,
+        'head_report_download':head_report_download,'head_privilege_update':head_privilege_update,'head_view_roles':head_view_roles,
         'head_view_user':head_view_user,'head_view_employee':head_view_employee,'head_view_location':head_view_location,'head_view_category':head_view_category,'head_view_department':head_view_department,
 
     }
@@ -1303,34 +1452,41 @@ def reports_view(request):
     return render(request, 'asset_mng/reports.html', context)
 
 
-def roles(request):
-    return render(request,'asset_mng/roles.html')
+
 
 
 def privileges(request):
     username =request.session.get('username',None)
+    user_role = request.session.get('role',None)
+    name = request.session.get('name',None)
     if not username:
         return redirect('asset_login')
-    return render(request,'asset_mng/privileges.html',{'username':username})
+    return render(request,'asset_mng/privileges.html',{'username':username,'user_role':user_role,'name':name})
 
 def privilege_admin(request):
     username =request.session.get('username',None)
+    user_role = request.session.get('role',None)
+    name = request.session.get('name',None)
     if not username:
         return redirect('asset_login')
-    return render(request,'asset_mng/privilege_admin.html',{'username':username})
+    return render(request,'asset_mng/privilege_admin.html',{'username':username,'user_role':user_role,'name':name})
 
 def privilege_ciso(request):
     username =request.session.get('username',None)
+    user_role = request.session.get('role',None)
+    name = request.session.get('name',None)
     if not username:
         return redirect('asset_login')
-    return render(request,'asset_mng/privilege_ciso.html',{'username':username})
+    return render(request,'asset_mng/privilege_ciso.html',{'username':username,'user_role':user_role,'name':name})
 
 
 def privilege_head(request):
     username =request.session.get('username',None)
+    user_role = request.session.get('role',None)
+    name = request.session.get('name',None)
     if not username:
         return redirect('asset_login')
-    return render(request,'asset_mng/privilege_head.html',{'username':username})
+    return render(request,'asset_mng/privilege_head.html',{'username':username,'user_role':user_role,'name':name})
 
 @csrf_exempt
 def privilege_asset_owner(request):
@@ -1375,13 +1531,17 @@ def privilege_asset_owner(request):
         edit_category = request.POST.get('edit_category') == 'on'
         delete_category= request.POST.get('delete_category') == 'on'
 
+        view_roles = request.POST.get('view_roles') == 'on'
+        edit_roles = request.POST.get('edit_roles') == 'on'
+
         AssetOwner_Privilege.objects.all().update(add_asset=add_asset, view_asset = view_asset, edit_asset = edit_asset, delete_asset = delete_asset, 
                                                   report_download = report_download, privilege_update = privilege_update, 
                                                   view_user = view_user, add_user = add_user, edit_user = edit_user, delete_user = delete_user,
                                                   view_employee = view_employee, add_employee = add_employee, edit_employee = edit_employee, delete_employee = delete_employee,
                                                   view_location=view_location,add_location=add_location,edit_location=edit_location,delete_location=delete_location,
                                                   view_department = view_department, add_department = add_department, edit_department = edit_department, delete_department = delete_department,
-                                                  view_category=view_category,add_category=add_category,edit_category=edit_category,delete_category=delete_category,)
+                                                  view_category=view_category,add_category=add_category,edit_category=edit_category,delete_category=delete_category,
+                                                  view_roles = view_roles,edit_roles=edit_roles,)
         return redirect('privilege_asset_owner')
     
     # Check if any asset owner has add_asset set to True to set the checkbox state
@@ -1417,6 +1577,9 @@ def privilege_asset_owner(request):
     any_edit_category= AssetOwner_Privilege.objects.filter(edit_category= True).exists()
     any_delete_category= AssetOwner_Privilege.objects.filter(delete_category = True).exists()
 
+    any_view_roles = AssetOwner_Privilege.objects.filter(view_roles = True).exists()
+    any_edit_roles = AssetOwner_Privilege.objects.filter(edit_roles = True).exists()
+
 
 
     return render(request, 'asset_mng/privilege_asset_owner.html', {
@@ -1425,6 +1588,9 @@ def privilege_asset_owner(request):
         'name': name,
         'privilege_update' : any_privilege_update,
         'report_download' : any_report_download,
+
+        'view_roles':any_view_roles,
+        'edit_roles':any_edit_roles,
 
         'add_asset': any_add_asset,
         'view_asset': any_view_asset,
@@ -1501,6 +1667,9 @@ def privilege_ciso(request):
         ciso_edit_category = request.POST.get('ciso_edit_category') == 'on'
         ciso_delete_category = request.POST.get('ciso_delete_category') == 'on'
 
+        ciso_view_roles = request.POST.get('ciso_view_roles') == 'on'
+        ciso_edit_roles = request.POST.get('ciso_edit_roles') == 'on'
+
         CISO_Privilege.objects.all().update(
             ciso_add_asset=ciso_add_asset, ciso_view_asset=ciso_view_asset, ciso_edit_asset=ciso_edit_asset, ciso_delete_asset=ciso_delete_asset, 
             ciso_report_download=ciso_report_download, ciso_privilege_update=ciso_privilege_update, 
@@ -1508,7 +1677,8 @@ def privilege_ciso(request):
             ciso_view_employee=ciso_view_employee, ciso_add_employee=ciso_add_employee, ciso_edit_employee=ciso_edit_employee, ciso_delete_employee=ciso_delete_employee,
             ciso_view_location=ciso_view_location, ciso_add_location=ciso_add_location, ciso_edit_location=ciso_edit_location, ciso_delete_location=ciso_delete_location,
             ciso_view_department=ciso_view_department, ciso_add_department=ciso_add_department, ciso_edit_department=ciso_edit_department, ciso_delete_department=ciso_delete_department,
-            ciso_view_category=ciso_view_category, ciso_add_category=ciso_add_category, ciso_edit_category=ciso_edit_category, ciso_delete_category=ciso_delete_category
+            ciso_view_category=ciso_view_category, ciso_add_category=ciso_add_category, ciso_edit_category=ciso_edit_category, ciso_delete_category=ciso_delete_category,
+            ciso_view_roles=ciso_view_roles,ciso_edit_roles=ciso_edit_roles,
         )
         return redirect('privilege_ciso')
     
@@ -1545,12 +1715,18 @@ def privilege_ciso(request):
     any_ciso_edit_category = CISO_Privilege.objects.filter(ciso_edit_category=True).exists()
     any_ciso_delete_category = CISO_Privilege.objects.filter(ciso_delete_category=True).exists()
 
+    any_ciso_view_roles = CISO_Privilege.objects.filter(ciso_view_roles=True).exists()
+    any_ciso_edit_roles = CISO_Privilege.objects.filter(ciso_edit_roles=True).exists()
+
     return render(request, 'asset_mng/privilege_ciso.html', {
         'user_role': user_role,
         'username': username,
         'name': name,
         'ciso_privilege_update': any_ciso_privilege_update,
         'ciso_report_download': any_ciso_report_download,
+
+        'ciso_view_roles':any_ciso_view_roles,
+        'ciso_edit_roles':any_ciso_edit_roles,
 
         'ciso_add_asset': any_ciso_add_asset,
         'ciso_view_asset': any_ciso_view_asset,
@@ -1626,6 +1802,9 @@ def privilege_head(request):
         head_edit_category = request.POST.get('head_edit_category') == 'on'
         head_delete_category = request.POST.get('head_delete_category') == 'on'
 
+        head_view_roles = request.POST.get('head_view_roles') == 'on'
+        head_edit_roles = request.POST.get('head_edit_roles') == 'on'
+
         Head_Privilege.objects.all().update(
             head_add_asset=head_add_asset, head_view_asset=head_view_asset, head_edit_asset=head_edit_asset, head_delete_asset=head_delete_asset, 
             head_report_download=head_report_download, head_privilege_update=head_privilege_update, 
@@ -1634,6 +1813,7 @@ def privilege_head(request):
             head_view_location=head_view_location, head_add_location=head_add_location, head_edit_location=head_edit_location, head_delete_location=head_delete_location,
             head_view_department=head_view_department, head_add_department=head_add_department, head_edit_department=head_edit_department, head_delete_department=head_delete_department,
             head_view_category=head_view_category, head_add_category=head_add_category, head_edit_category=head_edit_category, head_delete_category=head_delete_category,
+            head_view_roles=head_view_roles,head_edit_roles=head_edit_roles,
         )
         return redirect('privilege_head')
     
@@ -1670,12 +1850,19 @@ def privilege_head(request):
     any_head_edit_category = Head_Privilege.objects.filter(head_edit_category=True).exists()
     any_head_delete_category =  Head_Privilege.objects.filter(head_delete_category=True).exists()
 
+    any_head_view_roles =  Head_Privilege.objects.filter(head_view_roles=True).exists()
+    any_head_edit_roles =  Head_Privilege.objects.filter(head_edit_roles=True).exists()
+
+
     return render(request, 'asset_mng/privilege_head.html', {
         'user_role': user_role,
         'username': username,
         'name': name,
         'head_privilege_update': any_head_privilege_update,
         'head_report_download': any_head_report_download,
+
+        'head_view_roles':any_head_view_roles,
+        'head_edit_roles':any_head_edit_roles,
 
         'head_add_asset': any_head_add_asset,
         'head_view_asset': any_head_view_asset,
@@ -1723,6 +1910,7 @@ def asset_list(request):
     view_location = False
     view_category = False
     view_department = False
+    view_roles = False
 
     privilege_update = False
     report_download = False
@@ -1737,6 +1925,7 @@ def asset_list(request):
     ciso_view_location = False
     ciso_view_category = False
     ciso_view_department = False
+    ciso_view_roles = False
 
     ciso_privilege_update = False
     ciso_report_download = False
@@ -1751,6 +1940,7 @@ def asset_list(request):
     head_view_location = False
     head_view_category = False
     head_view_department = False
+    head_view_roles = False
 
     head_privilege_update = False
     head_report_download = False
@@ -1776,6 +1966,7 @@ def asset_list(request):
                     view_location = privileges.filter(view_location = True).exists()
                     view_category = privileges.filter(view_category = True).exists()
                     view_department = privileges.filter(view_department = True).exists()
+                    view_roles = privileges.filter(view_roles = True).exists()
 
                 #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
             except UserDetails.DoesNotExist:
@@ -1801,6 +1992,7 @@ def asset_list(request):
                         ciso_view_location = ciso_privileges.filter(ciso_view_location = True).exists()
                         ciso_view_category = ciso_privileges.filter(ciso_view_category = True).exists()
                         ciso_view_department = ciso_privileges.filter(ciso_view_department = True).exists()
+                        ciso_view_roles = privileges.filter(ciso_view_roles = True).exists()
                 except UserDetails.DoesNotExist:
                     print(f"UserDetails.DoesNotExist: {username}")
                 except AssetOwner_Privilege.DoesNotExist:
@@ -1825,6 +2017,7 @@ def asset_list(request):
                     head_view_location = head_privileges.filter(head_view_location = True).exists()
                     head_view_category = head_privileges.filter(head_view_category = True).exists()
                     head_view_department = head_privileges.filter(head_view_department = True).exists()
+                    head_view_roles = privileges.filter(head_view_roles = True).exists()
 
                 #print(f"Privilege found: {privilege}, add_asset: {add_asset}")  # Debugging statement
             except UserDetails.DoesNotExist:
@@ -1836,15 +2029,15 @@ def asset_list(request):
         'users': users,'name':name,'user_role':user_role,'add_asset':add_asset,
         'view_asset':view_asset,'edit_asset':edit_asset,'delete_asset':delete_asset,
         'username':username, 'privilege_update': privilege_update, 'report_download': report_download,
-        'view_user':view_user, 'view_employee':view_employee,'view_location':view_location,'view_category':view_category,'view_department':view_department,
+        'view_user':view_user, 'view_employee':view_employee,'view_location':view_location,'view_category':view_category,'view_department':view_department,'view_roles':view_roles,
 
         'ciso_add_asset':ciso_add_asset,'ciso_view_asset':ciso_view_asset,'ciso_edit_asset':ciso_edit_asset,'ciso_delete_asset':ciso_delete_asset,
         'ciso_privilege_update':ciso_privilege_update,'ciso_report_download':ciso_report_download,
-        'ciso_view_user':ciso_view_user,'ciso_view_employee':ciso_view_employee,'ciso_view_location':ciso_view_location,'ciso_view_category':ciso_view_category,'ciso_view_department':ciso_view_department,
+        'ciso_view_user':ciso_view_user,'ciso_view_employee':ciso_view_employee,'ciso_view_location':ciso_view_location,'ciso_view_category':ciso_view_category,'ciso_view_department':ciso_view_department,'ciso_view_roles':ciso_view_roles,
 
         'head_add_asset':head_add_asset,'head_view_asset':head_view_asset,'head_edit_asset':head_edit_asset,'head_delete_asset':head_delete_asset,
         'head_privilege_update':head_privilege_update,'head_report_download':head_report_download,
-        'head_view_user':head_view_user,'head_view_employee':head_view_employee,'head_view_location':head_view_location,'head_view_category':head_view_category,'head_view_department':head_view_department,
+        'head_view_user':head_view_user,'head_view_employee':head_view_employee,'head_view_location':head_view_location,'head_view_category':head_view_category,'head_view_department':head_view_department,'head_view_roles':head_view_roles,
     })
 
 

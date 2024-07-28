@@ -242,9 +242,7 @@ dialog::backdrop{
     <div class="right">
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search by Location..." aria-label="Search">
-            {% if user_role == 'admin' or add_location %}
-            {% elif user_role == 'admin' or ciso_add_location %}
-            {% elif user_role == 'admin' or head_add_location %}
+            {% if user_role == 'admin' or add_location or ciso_add_location or head_add_location%}
                 <button class="add-button" aria-label="Add Loc" id="addLocationBtn"><i class="fas fa-plus"></i> Add</button>
             {% endif %}    
         </div>
@@ -259,14 +257,10 @@ dialog::backdrop{
                             <th>Serial No</th>
                             <th>Location</th>
                             <th>Status</th>
-                            {% if user_role == 'admin' or edit_location %}
-                            {% elif user_role == 'admin' or ciso_edit_location %}
-                            {% elif user_role == 'admin' or head_edit_location %}
+                            {% if user_role == 'admin' or edit_location or ciso_edit_location or head_edit_location%}
                                 <th>Edit</th>
                             {% endif %}
-                            {% if user_role == 'admin' or delete_location %}
-                            {% elif user_role == 'admin' or ciso_delete_location %}
-                            {% elif user_role == 'admin' or head_delete_location %}
+                            {% if user_role == 'admin' or delete_location or ciso_delete_location or head_delete_location%}
                                 <th>Delete</th>
                             {% endif %}    
                         </tr>
@@ -277,17 +271,13 @@ dialog::backdrop{
                         <td>{{forloop.counter}}</td>
                         <td>{{location.location}}</td>
                         <td>{{location.loc_status}}</td>
-                        {% if user_role == 'admin' or edit_location %}
-                        {% elif user_role == 'admin' or ciso_edit_location %}
-                        {% elif user_role == 'admin' or head_edit_location %}
+                        {% if user_role == 'admin' or edit_location or ciso_edit_location or head_edit_location%}
                             <td>
                                 <a class="edit-icon" data-id="{{location.id}}"><i class="fas fa-edit"></i></a>
                     
                             </td>
                         {% endif %}  
-                        {% if user_role == 'admin' or delete_location %}  
-                        {% elif user_role == 'admin' or ciso_delete_location %}
-                        {% elif user_role == 'admin' or head_delete_location %}
+                        {% if user_role == 'admin' or delete_location or ciso_delete_location or head_delete_location%}
                             <td>
                                 <form action="{% url 'delete_loc' location.id %}" method="post">
                                     {% csrf_token %}
